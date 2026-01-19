@@ -121,23 +121,104 @@ export class DummyDataService {
 
   /**
    * Generate dummy loans with realistic data
+   * 7 primary loans plus additional portfolio loans
    */
   private generateDummyLoans(borrowers: BorrowerInfo[]): LoanBalance[] {
     return [
+      // PRIMARY LOAN 1: Residential Mortgage - John Smith
       {
         loanId: 'LOAN_001',
         borrowerId: 'BOR_001',
-        principal: 250000,
-        outstandingBalance: 235000,
-        interestRate: 4.5,
+        principal: 450000,
+        outstandingBalance: 412500,
+        interestRate: 4.25,
         currency: 'USD',
         loanType: 'mortgage',
         originationDate: new Date('2021-06-15'),
         maturityDate: new Date('2031-06-15'),
         status: 'active'
       },
+      // PRIMARY LOAN 2: Auto Loan - Sarah Johnson
       {
         loanId: 'LOAN_002',
+        borrowerId: 'BOR_002',
+        principal: 85000,
+        outstandingBalance: 68400,
+        interestRate: 5.75,
+        currency: 'USD',
+        loanType: 'retail',
+        originationDate: new Date('2023-08-20'),
+        maturityDate: new Date('2028-08-20'),
+        status: 'active'
+      },
+      // PRIMARY LOAN 3: Business Expansion - Tech Innovations Corp
+      {
+        loanId: 'LOAN_003',
+        borrowerId: 'BOR_003',
+        principal: 3500000,
+        outstandingBalance: 3150000,
+        interestRate: 4.0,
+        currency: 'USD',
+        loanType: 'corporate',
+        originationDate: new Date('2022-03-01'),
+        maturityDate: new Date('2027-03-01'),
+        status: 'active'
+      },
+      // PRIMARY LOAN 4: Real Estate Development - Real Estate Holdings LLC
+      {
+        loanId: 'LOAN_004',
+        borrowerId: 'BOR_004',
+        principal: 12500000,
+        outstandingBalance: 11250000,
+        interestRate: 4.5,
+        currency: 'USD',
+        loanType: 'corporate',
+        originationDate: new Date('2019-01-15'),
+        maturityDate: new Date('2029-01-15'),
+        status: 'active'
+      },
+      // PRIMARY LOAN 5: Working Capital - Global Manufacturing Inc
+      {
+        loanId: 'LOAN_005',
+        borrowerId: 'BOR_006',
+        principal: 6500000,
+        outstandingBalance: 5850000,
+        interestRate: 3.75,
+        currency: 'USD',
+        loanType: 'corporate',
+        originationDate: new Date('2021-09-10'),
+        maturityDate: new Date('2031-09-10'),
+        status: 'active'
+      },
+      // PRIMARY LOAN 6: Personal Loan - Michael Chen
+      {
+        loanId: 'LOAN_006',
+        borrowerId: 'BOR_005',
+        principal: 75000,
+        outstandingBalance: 52500,
+        interestRate: 7.5,
+        currency: 'USD',
+        loanType: 'retail',
+        originationDate: new Date('2022-11-15'),
+        maturityDate: new Date('2027-11-15'),
+        status: 'active'
+      },
+      // PRIMARY LOAN 7: Commercial Mortgage - Emily Davis
+      {
+        loanId: 'LOAN_007',
+        borrowerId: 'BOR_007',
+        principal: 550000,
+        outstandingBalance: 495000,
+        interestRate: 4.5,
+        currency: 'USD',
+        loanType: 'mortgage',
+        originationDate: new Date('2020-04-20'),
+        maturityDate: new Date('2030-04-20'),
+        status: 'active'
+      },
+      // ADDITIONAL LOANS IN PORTFOLIO
+      {
+        loanId: 'LOAN_008',
         borrowerId: 'BOR_001',
         principal: 50000,
         outstandingBalance: 42000,
@@ -149,7 +230,7 @@ export class DummyDataService {
         status: 'active'
       },
       {
-        loanId: 'LOAN_003',
+        loanId: 'LOAN_009',
         borrowerId: 'BOR_002',
         principal: 180000,
         outstandingBalance: 165000,
@@ -161,19 +242,7 @@ export class DummyDataService {
         status: 'active'
       },
       {
-        loanId: 'LOAN_004',
-        borrowerId: 'BOR_003',
-        principal: 5000000,
-        outstandingBalance: 4500000,
-        interestRate: 3.75,
-        currency: 'USD',
-        loanType: 'corporate',
-        originationDate: new Date('2022-01-15'),
-        maturityDate: new Date('2027-01-15'),
-        status: 'active'
-      },
-      {
-        loanId: 'LOAN_005',
+        loanId: 'LOAN_010',
         borrowerId: 'BOR_003',
         principal: 2000000,
         outstandingBalance: 1800000,
@@ -185,19 +254,7 @@ export class DummyDataService {
         status: 'active'
       },
       {
-        loanId: 'LOAN_006',
-        borrowerId: 'BOR_004',
-        principal: 15000000,
-        outstandingBalance: 13500000,
-        interestRate: 4.5,
-        currency: 'USD',
-        loanType: 'corporate',
-        originationDate: new Date('2018-12-01'),
-        maturityDate: new Date('2028-12-01'),
-        status: 'active'
-      },
-      {
-        loanId: 'LOAN_007',
+        loanId: 'LOAN_011',
         borrowerId: 'BOR_004',
         principal: 3000000,
         outstandingBalance: 2200000,
@@ -209,63 +266,15 @@ export class DummyDataService {
         status: 'defaulted'
       },
       {
-        loanId: 'LOAN_008',
-        borrowerId: 'BOR_005',
-        principal: 100000,
-        outstandingBalance: 35000,
-        interestRate: 7.25,
-        currency: 'USD',
-        loanType: 'retail',
-        originationDate: new Date('2022-05-10'),
-        maturityDate: new Date('2027-05-10'),
-        status: 'active'
-      },
-      {
-        loanId: 'LOAN_009',
-        borrowerId: 'BOR_006',
+        loanId: 'LOAN_012',
+        borrowerId: 'BOR_008',
         principal: 8000000,
         outstandingBalance: 7200000,
-        interestRate: 3.5,
-        currency: 'USD',
-        loanType: 'corporate',
-        originationDate: new Date('2021-11-01'),
-        maturityDate: new Date('2031-11-01'),
-        status: 'active'
-      },
-      {
-        loanId: 'LOAN_010',
-        borrowerId: 'BOR_007',
-        principal: 350000,
-        outstandingBalance: 320000,
-        interestRate: 4.75,
-        currency: 'USD',
-        loanType: 'mortgage',
-        originationDate: new Date('2020-02-01'),
-        maturityDate: new Date('2030-02-01'),
-        status: 'active'
-      },
-      {
-        loanId: 'LOAN_011',
-        borrowerId: 'BOR_008',
-        principal: 12000000,
-        outstandingBalance: 11000000,
         interestRate: 3.25,
         currency: 'USD',
         loanType: 'corporate',
         originationDate: new Date('2019-07-15'),
         maturityDate: new Date('2029-07-15'),
-        status: 'active'
-      },
-      {
-        loanId: 'LOAN_012',
-        borrowerId: 'BOR_003',
-        principal: 1500000,
-        outstandingBalance: 1350000,
-        interestRate: 4.25,
-        currency: 'USD',
-        loanType: 'corporate',
-        originationDate: new Date('2022-09-01'),
-        maturityDate: new Date('2027-09-01'),
         status: 'active'
       }
     ];
@@ -273,6 +282,7 @@ export class DummyDataService {
 
   /**
    * Generate dummy transactions for the last 5 months
+   * Includes payments, interest, fees, and disbursements
    */
   private generateDummyTransactions(loans: LoanBalance[]): Transaction[] {
     const transactions: Transaction[] = [];
@@ -286,13 +296,16 @@ export class DummyDataService {
         transactionDate.setMonth(transactionDate.getMonth() - i);
         transactionDate.setDate(15); // Set to 15th of each month for consistency
         
+        // Calculate monthly payment based on loan type
+        const loanTermYears = loan.maturityDate.getFullYear() - loan.originationDate.getFullYear();
+        const monthlyPayment = Math.round((loan.principal / (loanTermYears || 1)) / 12);
+        
         // Monthly payment
-        const monthlyPayment = Math.round((loan.principal / (loan.maturityDate.getFullYear() - loan.originationDate.getFullYear())) / 12);
         transactions.push({
           transactionId: `TXN_${String(txnCounter).padStart(4, '0')}`,
           loanId: loan.loanId,
           transactionDate: transactionDate,
-          amount: monthlyPayment,
+          amount: monthlyPayment > 0 ? monthlyPayment : 5000,
           type: 'payment',
           status: Math.random() > 0.05 ? 'completed' : 'pending',
           description: `Monthly payment for ${loan.loanId}`
@@ -305,23 +318,39 @@ export class DummyDataService {
           transactionId: `TXN_${String(txnCounter).padStart(4, '0')}`,
           loanId: loan.loanId,
           transactionDate: transactionDate,
-          amount: monthlyInterest,
+          amount: monthlyInterest > 0 ? monthlyInterest : 1000,
           type: 'interest',
           status: 'completed',
           description: `Interest charge for ${loan.loanId}`
         });
         txnCounter++;
 
-        // Random service fees on some transactions
-        if (Math.random() > 0.7) {
+        // Service fees on selected loans
+        if (loan.loanType === 'corporate' || Math.random() > 0.75) {
+          const feeAmount = Math.round(Math.random() * 300 + 100);
           transactions.push({
             transactionId: `TXN_${String(txnCounter).padStart(4, '0')}`,
             loanId: loan.loanId,
             transactionDate: transactionDate,
-            amount: Math.round(Math.random() * 200 + 50),
+            amount: feeAmount,
             type: 'fee',
             status: 'completed',
             description: `Service fee for ${loan.loanId}`
+          });
+          txnCounter++;
+        }
+
+        // Additional payment on some months (extra principal payment)
+        if (Math.random() > 0.8) {
+          const extraPayment = Math.round(Math.random() * 5000 + 2000);
+          transactions.push({
+            transactionId: `TXN_${String(txnCounter).padStart(4, '0')}`,
+            loanId: loan.loanId,
+            transactionDate: new Date(transactionDate.getTime() + 86400000 * 5), // 5 days later
+            amount: extraPayment,
+            type: 'payment',
+            status: 'completed',
+            description: `Extra principal payment for ${loan.loanId}`
           });
           txnCounter++;
         }
@@ -336,9 +365,27 @@ export class DummyDataService {
         amount: loan.principal,
         type: 'disbursement',
         status: 'completed',
-        description: `Loan disbursement for ${loan.loanId}`
+        description: `Initial loan disbursement for ${loan.loanId}`
       });
       txnCounter++;
+
+      // Add a second disbursement for corporate loans with multiple tranches
+      if (loan.loanType === 'corporate' && Math.random() > 0.6) {
+        const trancheDate = new Date(loan.originationDate);
+        trancheDate.setMonth(trancheDate.getMonth() + 3);
+        const trancheAmount = Math.round(loan.principal * 0.3);
+        
+        transactions.push({
+          transactionId: `TXN_${String(txnCounter).padStart(4, '0')}`,
+          loanId: loan.loanId,
+          transactionDate: trancheDate,
+          amount: trancheAmount,
+          type: 'disbursement',
+          status: 'completed',
+          description: `Second tranche disbursement for ${loan.loanId}`
+        });
+        txnCounter++;
+      }
     });
 
     return transactions.sort((a, b) => b.transactionDate.getTime() - a.transactionDate.getTime());
