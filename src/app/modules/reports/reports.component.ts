@@ -4,11 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { DataRepositoryService } from '@core/services/data-repository.service';
 import { ECLCalculationService } from '@core/services/ecl-calculation.service';
 import { ECLSummary } from '@core/interfaces/ecl.interface';
+import { AiChatComponent } from './components/ai-chat.component';
 
 @Component({
   selector: 'app-reports',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, AiChatComponent],
   templateUrl: './reports.component.html',
   styleUrl: './reports.component.scss'
 })
@@ -16,6 +17,7 @@ export class ReportsComponent implements OnInit {
   summary: ECLSummary | null = null;
   bankingSummary: any = null;
   selectedReport: 'portfolio' | 'risk' | 'forecast' = 'portfolio';
+  activeTab: 'reports' | 'ai-chat' = 'reports';
 
   constructor(
     private dataRepository: DataRepositoryService,
