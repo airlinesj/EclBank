@@ -27,6 +27,9 @@
     <button [class.active]="selectedTab === 'formulas'" (click)="selectedTab = 'formulas'" class="tab-button">
       Formulas
     </button>
+    <button [class.active]="selectedTab === 'custom'" (click)="selectedTab = 'custom'" class="tab-button">
+      🧮 Custom Calculation
+    </button>
   </div>
 
   <!-- Summary Tab -->
@@ -142,6 +145,238 @@
             <span>Created: {{ formula.createdDate | date: 'short' }}</span>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom Calculation Tab -->
+  <div *ngIf="selectedTab === 'custom'" class="tab-pane custom-calc-pane">
+    <div class="custom-calc-header">
+      <h2>ECL Custom Calculator</h2>
+      <p class="formula-display">Formula: PD × LGD × EAD × Effective Interest Rate</p>
+    </div>
+
+    <div class="option-selector">
+      <button 
+        [class.active]="selectedOption === 'dummy'"
+        (click)="switchOption('dummy')"
+        class="option-btn">
+        📊 Use Dummy Data
+      </button>
+      <button 
+        [class.active]="selectedOption === 'user_input'"
+        (click)="switchOption('user_input')"
+        class="option-btn">
+        ✏️ Enter Your Data
+      </button>
+    </div>
+
+    <!-- Dummy Data Option -->
+    <div *ngIf="selectedOption === 'dummy'" class="calculation-section">
+      <h3>Select a Loan from Dummy Data</h3>
+      <div class="form-group">
+        <label>Available Loans:</label>
+        <select [(ngModel)]="selectedDummyLoan" class="loan-select">
+          <option *ngFor="let loan of dummyLoans" [ngValue]="loan">
+            {{ loan.loanId }} - {{ loan.loanType | titlecase }} (${{ loan.outstandingBalance | number: '1.0-0' }})
+          </option>
+        </select>
+      </div>
+
+      <div *ngIf="selectedDummyLoan" class="loan-preview">
+        <h4>Loan Details</h4>
+        <div class="preview-grid">
+          <div class="preview-item">
+            <span class="label">Loan ID:</span>
+            <span class="value">{{ selectedDummyLoan.loanId }}</span>
+          </div>
+          <div class="preview-item">
+            <span class="label">Loan Type:</span>
+            <span class="value">{{ selectedDummyLoan.loanType | titlecase }}</span>
+          </div>
+          <div class="preview-item">
+            <span class="label">Outstanding Balance:</span>
+            <span class="value">${{ selectedDummyLoan.outstandingBalance | number: '1.2-2' }}</span>
+          </div>
+          <div class="preview-item">
+            <span class="label">Interest Rate:</span>
+            <span class="value">{{ selectedDummyLoan.interestRate | number: '1.2-2' }}%</span>
+          </div>
+          <div class="preview-item">
+            <span class="label">Status:</span>
+            <span class="value" [class.defaulted]="selectedDummyLoan.status === 'defaulted'">
+              {{ selectedDummyLoan.status | titlecase }}
+            </span>
+          </div>
+          <div class="preview-item">
+            <span class="label">Maturity Date:</span>
+            <span class="value">{{ selectedDummyLoan.maturityDate | date: 'shortDate' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- User Input Option -->
+    <div *ngIf="selectedOption === 'user_input'" class="calculation-section">
+      <h3>Enter ECL Calculation Parameters</h3>
+      <div class="input-form">
+        <div class="form-group">
+          <label>Probability of Default (PD) %:</label>
+          <input 
+            type="number" 
+            [(ngModel)]="userInput.pd" 
+            min="0" 
+            max="100"
+            step="0.1"
+            class="form-input"
+            placeholder="0-100">
+          <span class="helper-text">Typical range: 0-100%</span>
+        </div>
+
+        <div class="form-group">
+          <label>Loss Given Default (LGD) %:</label>
+          <input 
+            type="number" 
+            [(ngModel)]="userInput.lgd" 
+            min="0" 
+            max="100"
+            step="0.1"
+            class="form-input"
+            placeholder="0-100">
+          <span class="helper-text">Typical range: 0-100%</span>
+        </div>
+
+        <div class="form-group">
+          <label>Exposure at Default (EAD) $:</label>
+          <input 
+            type="number" 
+            [(ngModel)]="userInput.ead" 
+            min="0"
+            step="1000"
+            class="form-input"
+            placeholder="Amount in currency">
+          <span class="helper-text">Outstanding balance amount</span>
+        </div>
+
+        <div class="form-group">
+          <label>Effective Interest Rate (%) - Optional:</label>
+          <input 
+            type="number" 
+            [(ngModel)]="userInput.effectiveInterestRate" 
+            min="0" 
+            max="100"
+            step="0.1"
+            class="form-input"
+            placeholder="0-100 (default: 4%)">
+          <span class="helper-text">Default: 4% if not provided</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Validation Errors -->
+    <div *ngIf="validationErrors.length > 0" class="error-section">
+      <h4>⚠️ Validation Errors:</h4>
+      <ul class="error-list">
+        <li *ngFor="let error of validationErrors">{{ error }}</li>
+      </ul>
+    </div>
+
+    <!-- Calculate Button -->
+    <div class="button-group">
+      <button (click)="calculateCustomECL()" class="btn-calculate-custom">
+        🧮 Calculate ECL
+      </button>
+      <button (click)="resetCustomForm()" class="btn-reset">
+        Reset Form
+      </button>
+    </div>
+
+    <!-- Results Section -->
+    <div *ngIf="customResult" class="results-section">
+      <h3>Calculation Results</h3>
+      
+      <div class="result-display">
+        <div class="primary-result">
+          <div class="result-label">Expected Credit Loss (ECL)</div>
+          <div class="result-value">${{ customResult.ecl | number: '1.2-2' }}</div>
+        </div>
+      </div>
+
+      <div class="breakdown-details">
+        <h4>Calculation Breakdown</h4>
+        <div class="breakdown-grid">
+          <div class="breakdown-item">
+            <span class="label">Probability of Default (PD):</span>
+            <span class="value">{{ customResultDetailed.breakdown.pdPercentage.toFixed(2) }}%</span>
+          </div>
+          <div class="breakdown-item">
+            <span class="label">PD (Decimal):</span>
+            <span class="value">{{ customResultDetailed.breakdown.pdDecimal.toFixed(6) }}</span>
+          </div>
+          <div class="breakdown-item">
+            <span class="label">Loss Given Default (LGD):</span>
+            <span class="value">{{ customResultDetailed.breakdown.lgdPercentage.toFixed(2) }}%</span>
+          </div>
+          <div class="breakdown-item">
+            <span class="label">LGD (Decimal):</span>
+            <span class="value">{{ customResultDetailed.breakdown.lgdDecimal.toFixed(6) }}</span>
+          </div>
+          <div class="breakdown-item">
+            <span class="label">PD × LGD Product:</span>
+            <span class="value">{{ customResultDetailed.breakdown.pdLgdProduct.toFixed(6) }}</span>
+          </div>
+          <div class="breakdown-item">
+            <span class="label">PD × LGD (%):</span>
+            <span class="value">{{ customResultDetailed.breakdown.pdLgdPercentage.toFixed(4) }}%</span>
+          </div>
+          <div class="breakdown-item">
+            <span class="label">Exposure at Default (EAD):</span>
+            <span class="value">${{ customResult.ead | number: '1.2-2' }}</span>
+          </div>
+          <div class="breakdown-item">
+            <span class="label">Effective Interest Rate:</span>
+            <span class="value">{{ (customResult.effectiveInterestRate * 100).toFixed(2) }}%</span>
+          </div>
+          <div class="breakdown-item">
+            <span class="label">Interest Component (EAD × EIR):</span>
+            <span class="value">${{ customResultDetailed.breakdown.interestComponent.toFixed(2) }}</span>
+          </div>
+          <div class="breakdown-item highlight">
+            <span class="label">Final Loss Amount:</span>
+            <span class="value">${{ customResultDetailed.breakdown.lossAmount.toFixed(2) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="formula-applied">
+        <h4>Formula Applied</h4>
+        <div class="formula-box">
+          <p>{{ customResult.formula }}</p>
+          <p class="calculation-steps">
+            = {{ customResultDetailed.breakdown.pdDecimal.toFixed(6) }} × 
+            {{ customResultDetailed.breakdown.lgdDecimal.toFixed(6) }} × 
+            ${{ customResult.ead | number: '1.0-0' }} × 
+            {{ (customResult.effectiveInterestRate).toFixed(6) }}
+          </p>
+          <p class="calculation-steps">
+            = {{ (customResultDetailed.breakdown.pdLgdProduct).toFixed(6) }} × 
+            ${{ customResult.ead | number: '1.0-0' }} × 
+            {{ (customResult.effectiveInterestRate).toFixed(6) }}
+          </p>
+          <p class="calculation-result">
+            = <strong>${{ customResult.ecl | number: '1.2-2' }}</strong>
+          </p>
+        </div>
+      </div>
+
+      <div class="result-metadata">
+        <p><strong>Data Source:</strong> {{ customResult.source | titlecase }}</p>
+        <p><strong>Calculated:</strong> {{ customResult.calculationDate | date: 'medium' }}</p>
+      </div>
+
+      <div class="export-results">
+        <button (click)="exportCustomResult('json')" class="btn-export">📄 Export JSON</button>
+        <button (click)="exportCustomResult('csv')" class="btn-export">📊 Export CSV</button>
       </div>
     </div>
   </div>
