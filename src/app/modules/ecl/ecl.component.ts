@@ -7,7 +7,8 @@ import { ECLCustomCalculationService } from '@core/services/ecl-custom-calculati
 import { DummyDataService } from '@core/services/dummy-data.service';
 import { DataRepositoryService } from '@core/services/data-repository.service';
 import { AuditTrailService } from '@core/services/audit-trail.service';
-import { ECLCalculation, ECLSummary, ECLFormula, ECLCalculationInput, ECLCalculationResult, LoanBalance } from '@core/interfaces/ecl.interface';
+import { ECLCalculation, ECLSummary, ECLFormula, ECLCalculationInput, ECLCalculationResult } from '@core/interfaces/ecl.interface';
+import { LoanBalance } from '@core/interfaces/banking.interface';
 
 @Component({
   selector: 'app-ecl',
@@ -26,7 +27,7 @@ export class EclComponent implements OnInit {
 
   // Custom calculation properties
   customCalcTab: 'portfolio' | 'single' | 'compare' = 'portfolio';
-  selectedOption: 'dummy' | 'user_input' = 'dummy';
+  selectedOption: 'dummy_data' | 'user_input' = 'dummy_data';
   dummyLoans: LoanBalance[] = [];
   selectedDummyLoan: LoanBalance | null = null;
   
@@ -101,11 +102,14 @@ export class EclComponent implements OnInit {
 
     // Prepare input based on selected option
     let calculationInput: ECLCalculationInput;
+    let source: 'dummy_data' | 'user_input' | 'combined' = 'user_input';
 
-    if (this.selectedOption === 'dummy' && this.selectedDummyLoan) {
+    if (this.selectedOption === 'dummy_data' && this.selectedDummyLoan) {
       calculationInput = this.extractInputFromDummyLoan(this.selectedDummyLoan);
+      source = 'dummy_data';
     } else {
       calculationInput = this.userInput;
+      source = 'user_input';
     }
 
     // Validate input
@@ -118,7 +122,7 @@ export class EclComponent implements OnInit {
     // Calculate ECL
     this.customResult = this.customCalcService.calculateECL(
       calculationInput,
-      this.selectedOption
+      source
     );
     this.customResultDetailed = this.customCalcService.calculateECLWithBreakdown(
       calculationInput,
@@ -161,7 +165,7 @@ export class EclComponent implements OnInit {
     return lgdByType[loan.loanType] || 50;
   }
 
-  switchOption(option: 'dummy' | 'user_input'): void {
+  switchOption(option: 'dummy_data' | 'user_input'): void {
     this.selectedOption = option;
     this.customResult = null;
     this.customResultDetailed = null;

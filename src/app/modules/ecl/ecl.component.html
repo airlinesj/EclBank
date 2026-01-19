@@ -158,8 +158,8 @@
 
     <div class="option-selector">
       <button 
-        [class.active]="selectedOption === 'dummy'"
-        (click)="switchOption('dummy')"
+        [class.active]="selectedOption === 'dummy_data'"
+        (click)="switchOption('dummy_data')"
         class="option-btn">
         📊 Use Dummy Data
       </button>
@@ -172,7 +172,7 @@
     </div>
 
     <!-- Dummy Data Option -->
-    <div *ngIf="selectedOption === 'dummy'" class="calculation-section">
+    <div *ngIf="selectedOption === 'dummy_data'" class="calculation-section">
       <h3>Select a Loan from Dummy Data</h3>
       <div class="form-group">
         <label>Available Loans:</label>
