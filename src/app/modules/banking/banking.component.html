@@ -127,6 +127,7 @@
           <tr>
             <th>Borrower ID</th>
             <th>Name</th>
+            <th>Phone Number</th>
             <th>Type</th>
             <th>Sector</th>
             <th>Credit Score</th>
@@ -138,6 +139,7 @@
           <tr *ngFor="let borrower of borrowers">
             <td>{{ borrower.borrowerId }}</td>
             <td>{{ borrower.name }}</td>
+            <td>{{ borrower.phoneNumber || 'N/A' }}</td>
             <td>{{ borrower.type | titlecase }}</td>
             <td>{{ borrower.sector || 'N/A' }}</td>
             <td>{{ borrower.creditScore || 'N/A' }}</td>

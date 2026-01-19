@@ -35,6 +35,7 @@ export class DummyDataService {
       {
         borrowerId: 'BOR_001',
         name: 'John Smith',
+        phoneNumber: '+1-555-0101',
         type: 'individual',
         creditScore: 750,
         totalLoans: 2,
@@ -44,6 +45,7 @@ export class DummyDataService {
       {
         borrowerId: 'BOR_002',
         name: 'Sarah Johnson',
+        phoneNumber: '+1-555-0102',
         type: 'individual',
         creditScore: 680,
         totalLoans: 1,
@@ -53,6 +55,7 @@ export class DummyDataService {
       {
         borrowerId: 'BOR_003',
         name: 'Tech Innovations Corp',
+        phoneNumber: '+1-555-0103',
         type: 'corporate',
         sector: 'Technology',
         creditScore: 720,
@@ -63,6 +66,7 @@ export class DummyDataService {
       {
         borrowerId: 'BOR_004',
         name: 'Real Estate Holdings LLC',
+        phoneNumber: '+1-555-0104',
         type: 'corporate',
         sector: 'Real Estate',
         creditScore: 650,
@@ -73,6 +77,7 @@ export class DummyDataService {
       {
         borrowerId: 'BOR_005',
         name: 'Michael Chen',
+        phoneNumber: '+1-555-0105',
         type: 'individual',
         creditScore: 620,
         totalLoans: 1,
@@ -82,6 +87,7 @@ export class DummyDataService {
       {
         borrowerId: 'BOR_006',
         name: 'Global Manufacturing Inc',
+        phoneNumber: '+1-555-0106',
         type: 'corporate',
         sector: 'Manufacturing',
         creditScore: 780,
@@ -92,6 +98,7 @@ export class DummyDataService {
       {
         borrowerId: 'BOR_007',
         name: 'Emily Davis',
+        phoneNumber: '+1-555-0107',
         type: 'individual',
         creditScore: 700,
         totalLoans: 1,
@@ -101,6 +108,7 @@ export class DummyDataService {
       {
         borrowerId: 'BOR_008',
         name: 'Financial Services Group',
+        phoneNumber: '+1-555-0108',
         type: 'corporate',
         sector: 'Finance',
         creditScore: 710,
@@ -264,42 +272,76 @@ export class DummyDataService {
   }
 
   /**
-   * Generate dummy transactions
+   * Generate dummy transactions for the last 5 months
    */
   private generateDummyTransactions(loans: LoanBalance[]): Transaction[] {
     const transactions: Transaction[] = [];
     const now = new Date();
+    let txnCounter = 1;
 
     loans.forEach(loan => {
-      // Add monthly payments for the last 6 months
-      for (let i = 0; i < 6; i++) {
-        const paymentDate = new Date(now);
-        paymentDate.setMonth(paymentDate.getMonth() - i);
+      // Add monthly payments and transactions for the last 5 months
+      for (let i = 0; i < 5; i++) {
+        const transactionDate = new Date(now);
+        transactionDate.setMonth(transactionDate.getMonth() - i);
+        transactionDate.setDate(15); // Set to 15th of each month for consistency
         
+        // Monthly payment
+        const monthlyPayment = Math.round((loan.principal / (loan.maturityDate.getFullYear() - loan.originationDate.getFullYear())) / 12);
         transactions.push({
-          transactionId: `TXN_${loan.loanId}_${i}`,
+          transactionId: `TXN_${String(txnCounter).padStart(4, '0')}`,
           loanId: loan.loanId,
-          transactionDate: paymentDate,
-          amount: (loan.outstandingBalance * (loan.interestRate / 100)) / 12,
+          transactionDate: transactionDate,
+          amount: monthlyPayment,
           type: 'payment',
-          status: 'completed',
+          status: Math.random() > 0.05 ? 'completed' : 'pending',
           description: `Monthly payment for ${loan.loanId}`
         });
+        txnCounter++;
 
-        // Add interest charges
+        // Interest charge
+        const monthlyInterest = Math.round((loan.outstandingBalance * (loan.interestRate / 100)) / 12);
         transactions.push({
-          transactionId: `INT_${loan.loanId}_${i}`,
+          transactionId: `TXN_${String(txnCounter).padStart(4, '0')}`,
           loanId: loan.loanId,
-          transactionDate: paymentDate,
-          amount: (loan.outstandingBalance * (loan.interestRate / 100)) / 12,
+          transactionDate: transactionDate,
+          amount: monthlyInterest,
           type: 'interest',
           status: 'completed',
           description: `Interest charge for ${loan.loanId}`
         });
+        txnCounter++;
+
+        // Random service fees on some transactions
+        if (Math.random() > 0.7) {
+          transactions.push({
+            transactionId: `TXN_${String(txnCounter).padStart(4, '0')}`,
+            loanId: loan.loanId,
+            transactionDate: transactionDate,
+            amount: Math.round(Math.random() * 200 + 50),
+            type: 'fee',
+            status: 'completed',
+            description: `Service fee for ${loan.loanId}`
+          });
+          txnCounter++;
+        }
       }
+
+      // Add initial disbursement
+      const disbursementDate = new Date(loan.originationDate);
+      transactions.push({
+        transactionId: `TXN_${String(txnCounter).padStart(4, '0')}`,
+        loanId: loan.loanId,
+        transactionDate: disbursementDate,
+        amount: loan.principal,
+        type: 'disbursement',
+        status: 'completed',
+        description: `Loan disbursement for ${loan.loanId}`
+      });
+      txnCounter++;
     });
 
-    return transactions;
+    return transactions.sort((a, b) => b.transactionDate.getTime() - a.transactionDate.getTime());
   }
 
   /**
