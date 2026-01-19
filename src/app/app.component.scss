@@ -1,0 +1,42 @@
+// App Component Styles
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.2s ease;
+
+  .nav-text {
+    flex: 1;
+  }
+}
+
+.nav-item.active .nav-link {
+  color: white;
+}
+
+// Responsive mobile menu overlay
+@media (max-width: 768px) {
+  .sidebar.mobile-open {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1001;
+    height: 100vh;
+    width: 280px;
+  }
+}
+
+// Responsive mobile menu overlay
+@media (max-width: 768px) {
+  .sidebar.mobile-open {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1001;
+    height: 100vh;
+    width: 280px;
+  }
+}

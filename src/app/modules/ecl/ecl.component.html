@@ -1,0 +1,148 @@
+<div class="ecl-container">
+  <div class="ecl-header">
+    <h1>ECL Calculation</h1>
+  </div>
+
+  <div class="ecl-controls">
+    <div class="control-group">
+      <label>Select Formula:</label>
+      <select [(ngModel)]="selectedFormulaId" class="formula-select">
+        <option *ngFor="let formula of formulas" [value]="formula.formulaId">
+          {{ formula.name }}
+        </option>
+      </select>
+    </div>
+    <button (click)="calculateECL()" [disabled]="loading" class="btn-calculate">
+      {{ loading ? 'Calculating...' : 'Calculate ECL' }}
+    </button>
+  </div>
+
+  <div class="tabs">
+    <button [class.active]="selectedTab === 'summary'" (click)="selectedTab = 'summary'" class="tab-button">
+      Summary
+    </button>
+    <button [class.active]="selectedTab === 'details'" (click)="selectedTab = 'details'" class="tab-button">
+      Loan Details ({{ calculations.length }})
+    </button>
+    <button [class.active]="selectedTab === 'formulas'" (click)="selectedTab = 'formulas'" class="tab-button">
+      Formulas
+    </button>
+  </div>
+
+  <!-- Summary Tab -->
+  <div *ngIf="selectedTab === 'summary' && summary" class="tab-pane">
+    <div class="summary-cards">
+      <div class="summary-card primary">
+        <div class="card-label">Total ECL</div>
+        <div class="card-value">${{ summary.totalECL | number: '1.2-2' }}</div>
+      </div>
+      <div class="summary-card">
+        <div class="card-label">Stage 1 (Performing)</div>
+        <div class="card-value">${{ summary.stage1ECL | number: '1.2-2' }}</div>
+      </div>
+      <div class="summary-card">
+        <div class="card-label">Stage 2 (SICR)</div>
+        <div class="card-value">${{ summary.stage2ECL | number: '1.2-2' }}</div>
+      </div>
+      <div class="summary-card danger">
+        <div class="card-label">Stage 3 (Defaulted)</div>
+        <div class="card-value">${{ summary.stage3ECL | number: '1.2-2' }}</div>
+      </div>
+      <div class="summary-card">
+        <div class="card-label">Loans in Portfolio</div>
+        <div class="card-value">{{ summary.loanCount }}</div>
+      </div>
+      <div class="summary-card">
+        <div class="card-label">Defaulted Loans</div>
+        <div class="card-value">{{ summary.defaultedLoanCount }}</div>
+      </div>
+    </div>
+
+    <div class="breakdown-section">
+      <h3>ECL by Loan Type</h3>
+      <table class="breakdown-table">
+        <thead>
+          <tr>
+            <th>Loan Type</th>
+            <th>Count</th>
+            <th>Total ECL</th>
+            <th>Average ECL</th>
+            <th>% of Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let lt of summary.summaryByLoanType">
+            <td>{{ lt.loanType | titlecase }}</td>
+            <td>{{ lt.loanCount }}</td>
+            <td>${{ lt.totalECL | number: '1.2-2' }}</td>
+            <td>${{ lt.avgECL | number: '1.2-2' }}</td>
+            <td>{{ (lt.totalECL / summary.totalECL) * 100 | number: '1.1-1' }}%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="export-section">
+      <button (click)="exportSummary('json')" class="btn-export">Export as JSON</button>
+      <button (click)="exportSummary('csv')" class="btn-export">Export as CSV</button>
+    </div>
+  </div>
+
+  <!-- Details Tab -->
+  <div *ngIf="selectedTab === 'details'" class="tab-pane">
+    <table class="details-table">
+      <thead>
+        <tr>
+          <th>Loan ID</th>
+          <th>Stage</th>
+          <th>PD</th>
+          <th>LGD</th>
+          <th>EAD</th>
+          <th>ECL</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let calc of calculations">
+          <td>{{ calc.loanId }}</td>
+          <td class="stage-badge" [class]="'stage-' + calc.stage">Stage {{ calc.stage }}</td>
+          <td>{{ calc.probability12MonthDefault | number: '1.4-4' }}</td>
+          <td>{{ calc.lossGivenDefault | number: '1.4-4' }}</td>
+          <td>${{ calc.exposureAtDefault | number: '1.2-2' }}</td>
+          <td class="ecl-value">${{ calc.eclLifetime | number: '1.2-2' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Formulas Tab -->
+  <div *ngIf="selectedTab === 'formulas'" class="tab-pane">
+    <div class="formulas-list">
+      <div *ngFor="let formula of formulas" class="formula-card">
+        <div class="formula-header">
+          <h3>{{ formula.name }}</h3>
+          <span class="status-badge" [class.active]="formula.status === 'active'">{{ formula.status | titlecase }}</span>
+        </div>
+        <div class="formula-content">
+          <p>{{ formula.description }}</p>
+          <div class="formula-expression">
+            <strong>Formula:</strong>
+            <code>{{ formula.formula }}</code>
+          </div>
+          <div class="parameters">
+            <strong>Parameters:</strong>
+            <ul>
+              <li *ngFor="let param of formula.parameters">
+                <span class="param-name">{{ param.parameterName }}</span> - {{ param.description }}
+                ({{ param.dataSource }})
+              </li>
+            </ul>
+          </div>
+          <div class="formula-info">
+            <span>Loan Type: {{ formula.loanType | titlecase }}</span>
+            <span>Created: {{ formula.createdDate | date: 'short' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

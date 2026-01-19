@@ -1,0 +1,148 @@
+<div class="reports-container">
+  <div class="reports-header">
+    <h1>Reports & Analytics</h1>
+    <div class="report-actions">
+      <select [(ngModel)]="selectedReport" class="report-select">
+        <option value="portfolio">Portfolio Report</option>
+        <option value="risk">Risk Assessment</option>
+        <option value="forecast">Forecast Report</option>
+      </select>
+      <button (click)="generateReport()" class="btn-generate">Generate Report</button>
+    </div>
+  </div>
+
+  <div class="report-preview">
+    <!-- Portfolio Report Preview -->
+    <div *ngIf="selectedReport === 'portfolio'" class="report-content">
+      <h2>Portfolio Report</h2>
+      <div class="report-cards">
+        <div class="report-card">
+          <span class="card-label">Total Loan Balance</span>
+          <span class="card-value">${{ bankingSummary?.totalLoanBalance | number: '1.2-2' }}</span>
+        </div>
+        <div class="report-card">
+          <span class="card-label">Active Loans</span>
+          <span class="card-value">{{ bankingSummary?.activeLoanCount }}</span>
+        </div>
+        <div class="report-card highlight">
+          <span class="card-label">Defaulted Loans</span>
+          <span class="card-value">{{ bankingSummary?.defaultedLoanCount }}</span>
+        </div>
+        <div class="report-card">
+          <span class="card-label">Total Borrowers</span>
+          <span class="card-value">{{ bankingSummary?.borrowerCount }}</span>
+        </div>
+        <div class="report-card primary">
+          <span class="card-label">Total ECL</span>
+          <span class="card-value">${{ summary?.totalECL | number: '1.2-2' }}</span>
+        </div>
+      </div>
+
+      <table *ngIf="summary" class="summary-table">
+        <thead>
+          <tr>
+            <th>Loan Type</th>
+            <th>Count</th>
+            <th>Total ECL</th>
+            <th>Average ECL</th>
+            <th>% of Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let lt of summary.summaryByLoanType">
+            <td>{{ lt.loanType | titlecase }}</td>
+            <td>{{ lt.loanCount }}</td>
+            <td>${{ lt.totalECL | number: '1.2-2' }}</td>
+            <td>${{ lt.avgECL | number: '1.2-2' }}</td>
+            <td>{{ (lt.totalECL / summary.totalECL) * 100 | number: '1.1-1' }}%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Risk Assessment Preview -->
+    <div *ngIf="selectedReport === 'risk'" class="report-content">
+      <h2>Risk Assessment Report</h2>
+      <div class="risk-categories">
+        <div class="risk-category high">
+          <h3>High Risk</h3>
+          <p>Default probability > 50% or Credit Score < 500</p>
+          <ul>
+            <li>Close monitoring required</li>
+            <li>Increased provisions necessary</li>
+            <li>Enhanced documentation</li>
+          </ul>
+        </div>
+        <div class="risk-category medium">
+          <h3>Medium Risk</h3>
+          <p>Default probability 20-50% or Credit Score 500-650</p>
+          <ul>
+            <li>Regular monitoring</li>
+            <li>Collateral review</li>
+            <li>Performance tracking</li>
+          </ul>
+        </div>
+        <div class="risk-category low">
+          <h3>Low Risk</h3>
+          <p>Default probability < 20% and Credit Score > 650</p>
+          <ul>
+            <li>Standard monitoring</li>
+            <li>Standard provisions</li>
+            <li>Normal processing</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Forecast Preview -->
+    <div *ngIf="selectedReport === 'forecast'" class="report-content">
+      <h2>12-Month ECL Forecast</h2>
+      <div class="forecast-info">
+        <h3>Key Assumptions</h3>
+        <ul>
+          <li>GDP Growth: 2.5% (stable)</li>
+          <li>Inflation Rate: 3.0% (target)</li>
+          <li>Unemployment: 4.5% (stable)</li>
+          <li>Interest Rate: 4.75% (maintained)</li>
+        </ul>
+      </div>
+
+      <table class="forecast-table">
+        <thead>
+          <tr>
+            <th>Period</th>
+            <th>Projected ECL</th>
+            <th>Change</th>
+            <th>Confidence</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Current</td>
+            <td>${{ summary?.totalECL | number: '1.2-2' }}</td>
+            <td>—</td>
+            <td>100%</td>
+          </tr>
+          <tr>
+            <td>Month 3</td>
+            <td>${{ (summary?.totalECL || 0) * 1.02 | number: '1.2-2' }}</td>
+            <td>+2%</td>
+            <td>92%</td>
+          </tr>
+          <tr>
+            <td>Month 6</td>
+            <td>${{ (summary?.totalECL || 0) * 1.05 | number: '1.2-2' }}</td>
+            <td>+5%</td>
+            <td>85%</td>
+          </tr>
+          <tr>
+            <td>Month 12</td>
+            <td>${{ (summary?.totalECL || 0) * 1.08 | number: '1.2-2' }}</td>
+            <td>+8%</td>
+            <td>80%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

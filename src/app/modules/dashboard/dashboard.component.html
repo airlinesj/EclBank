@@ -1,0 +1,123 @@
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <h1>Banking ECL System Dashboard</h1>
+    <button (click)="loadDashboardData()" [disabled]="loading" class="btn-refresh">
+      {{ loading ? 'Loading...' : 'Refresh Data' }}
+    </button>
+  </div>
+
+  <div class="loading-spinner" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Loading dashboard data...</p>
+  </div>
+
+  <div class="dashboard-grid" *ngIf="!loading && bankingSummary">
+    <!-- Banking Summary Cards -->
+    <div class="card summary-card">
+      <div class="card-title">Portfolio Summary</div>
+      <div class="card-content">
+        <div class="metric">
+          <span class="label">Total Loan Balance</span>
+          <span class="value">${{ bankingSummary.totalLoanBalance | number: '1.2-2' }}</span>
+        </div>
+        <div class="metric">
+          <span class="label">Active Loans</span>
+          <span class="value">{{ bankingSummary.activeLoanCount }}</span>
+        </div>
+        <div class="metric">
+          <span class="label">Defaulted Loans</span>
+          <span class="value danger">{{ bankingSummary.defaultedLoanCount }}</span>
+        </div>
+        <div class="metric">
+          <span class="label">Total Borrowers</span>
+          <span class="value">{{ bankingSummary.borrowerCount }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ECL Summary Cards -->
+    <div class="card ecl-card" *ngIf="eclSummary">
+      <div class="card-title">Expected Credit Loss (ECL)</div>
+      <div class="card-content">
+        <div class="metric primary">
+          <span class="label">Total ECL</span>
+          <span class="value">${{ eclSummary.totalECL | number: '1.2-2' }}</span>
+        </div>
+        <div class="metric sub">
+          <span class="label">% of Portfolio</span>
+          <span class="value">{{ getECLAsPercentageOfPortfolio() | number: '1.2-2' }}%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ECL by Stage -->
+    <div class="card stage-card" *ngIf="eclSummary">
+      <div class="card-title">ECL by Stage (IFRS 9)</div>
+      <div class="card-content">
+        <div class="stage-metric">
+          <span class="stage-label">Stage 1 (Performing)</span>
+          <div class="stage-bar" [style.width.%]="(eclSummary.stage1ECL / eclSummary.totalECL) * 100 || 0"></div>
+          <span class="stage-value">${{ eclSummary.stage1ECL | number: '1.2-2' }}</span>
+        </div>
+        <div class="stage-metric">
+          <span class="stage-label">Stage 2 (SICR)</span>
+          <div class="stage-bar" [style.width.%]="(eclSummary.stage2ECL / eclSummary.totalECL) * 100 || 0"></div>
+          <span class="stage-value">${{ eclSummary.stage2ECL | number: '1.2-2' }}</span>
+        </div>
+        <div class="stage-metric">
+          <span class="stage-label">Stage 3 (Defaulted)</span>
+          <div class="stage-bar" [style.width.%]="(eclSummary.stage3ECL / eclSummary.totalECL) * 100 || 0"></div>
+          <span class="stage-value">${{ eclSummary.stage3ECL | number: '1.2-2' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ECL by Loan Type -->
+    <div class="card" *ngIf="eclSummary">
+      <div class="card-title">ECL by Loan Type</div>
+      <div class="card-content">
+        <table class="summary-table">
+          <thead>
+            <tr>
+              <th>Loan Type</th>
+              <th>Count</th>
+              <th>Total ECL</th>
+              <th>Avg ECL</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let summary of eclSummary.summaryByLoanType">
+              <td>{{ summary.loanType | titlecase }}</td>
+              <td>{{ summary.loanCount }}</td>
+              <td>${{ summary.totalECL | number: '1.2-2' }}</td>
+              <td>${{ summary.avgECL | number: '1.2-2' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Data Status -->
+    <div class="card status-card">
+      <div class="card-title">System Status</div>
+      <div class="card-content">
+        <div class="status-item">
+          <span class="status-label">Banking Data</span>
+          <span class="status-badge success">Ready</span>
+        </div>
+        <div class="status-item">
+          <span class="status-label">Macro Variables</span>
+          <span class="status-badge" [class.success]="macroVariablesLoaded">{{ macroVariablesLoaded ? 'Ready' : 'Pending' }}</span>
+        </div>
+        <div class="status-item">
+          <span class="status-label">Last Update</span>
+          <span class="status-time">{{ lastUpdateTime | date: 'short' }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="empty-state" *ngIf="!loading && !bankingSummary">
+    <p>Click "Refresh Data" to load banking and macro data</p>
+  </div>
+</div>

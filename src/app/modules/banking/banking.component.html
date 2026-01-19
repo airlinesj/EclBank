@@ -1,0 +1,151 @@
+<div class="banking-container">
+  <div class="banking-header">
+    <h1>Banking Data Management</h1>
+    <div class="header-actions">
+      <button (click)="loadBankingData()" [disabled]="loading" class="btn-primary">
+        {{ loading ? 'Loading...' : 'Refresh' }}
+      </button>
+      <button (click)="exportData('json')" class="btn-secondary">Export JSON</button>
+      <button (click)="exportData('csv')" class="btn-secondary">Export CSV</button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button [class.active]="selectedTab === 'loans'" (click)="selectedTab = 'loans'" class="tab-button">
+      Loans ({{ loans.length }})
+    </button>
+    <button [class.active]="selectedTab === 'transactions'" (click)="selectedTab = 'transactions'" class="tab-button">
+      Transactions ({{ transactions.length }})
+    </button>
+    <button [class.active]="selectedTab === 'borrowers'" (click)="selectedTab = 'borrowers'" class="tab-button">
+      Borrowers ({{ borrowers.length }})
+    </button>
+  </div>
+
+  <div class="tab-content">
+    <!-- Loans Tab -->
+    <div *ngIf="selectedTab === 'loans'" class="loans-section">
+      <div class="loans-list">
+        <div *ngFor="let loan of loans" class="loan-card" [class.selected]="selectedLoanId === loan.loanId">
+          <div class="loan-header" (click)="selectLoan(loan.loanId)">
+            <div class="loan-info">
+              <h3>{{ loan.loanId }}</h3>
+              <span class="loan-type">{{ loan.loanType | titlecase }}</span>
+              <span [class]="'status ' + loan.status">{{ loan.status | titlecase }}</span>
+            </div>
+            <div class="loan-balance">
+              <span class="balance-label">Outstanding Balance</span>
+              <span class="balance-value">${{ loan.outstandingBalance | number: '1.2-2' }}</span>
+            </div>
+          </div>
+
+          <div *ngIf="selectedLoanId === loan.loanId" class="loan-details">
+            <div class="detail-grid">
+              <div class="detail-item">
+                <span class="label">Principal</span>
+                <span class="value">${{ loan.principal | number: '1.2-2' }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">Interest Rate</span>
+                <span class="value">{{ loan.interestRate }}%</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">Currency</span>
+                <span class="value">{{ loan.currency }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">Origination Date</span>
+                <span class="value">{{ loan.originationDate | date: 'short' }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">Maturity Date</span>
+                <span class="value">{{ loan.maturityDate | date: 'short' }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">Borrower</span>
+                <span class="value">{{ (getBorrowerForLoan(loan.loanId))?.name || 'N/A' }}</span>
+              </div>
+            </div>
+
+            <!-- Transactions for this loan -->
+            <div class="loan-transactions">
+              <h4>Recent Transactions</h4>
+              <table class="transactions-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let txn of getLoanTransactions(loan.loanId)">
+                    <td>{{ txn.transactionDate | date: 'short' }}</td>
+                    <td>{{ txn.type | titlecase }}</td>
+                    <td>${{ txn.amount | number: '1.2-2' }}</td>
+                    <td class="status" [class]="txn.status">{{ txn.status | titlecase }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Transactions Tab -->
+    <div *ngIf="selectedTab === 'transactions'" class="transactions-section">
+      <table class="main-table">
+        <thead>
+          <tr>
+            <th>Transaction ID</th>
+            <th>Loan ID</th>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Amount</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let txn of transactions">
+            <td>{{ txn.transactionId }}</td>
+            <td>{{ txn.loanId }}</td>
+            <td>{{ txn.transactionDate | date: 'short' }}</td>
+            <td>{{ txn.type | titlecase }}</td>
+            <td>${{ txn.amount | number: '1.2-2' }}</td>
+            <td class="status" [class]="txn.status">{{ txn.status | titlecase }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Borrowers Tab -->
+    <div *ngIf="selectedTab === 'borrowers'" class="borrowers-section">
+      <table class="main-table">
+        <thead>
+          <tr>
+            <th>Borrower ID</th>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Sector</th>
+            <th>Credit Score</th>
+            <th>Total Loans</th>
+            <th>Defaults</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let borrower of borrowers">
+            <td>{{ borrower.borrowerId }}</td>
+            <td>{{ borrower.name }}</td>
+            <td>{{ borrower.type | titlecase }}</td>
+            <td>{{ borrower.sector || 'N/A' }}</td>
+            <td>{{ borrower.creditScore || 'N/A' }}</td>
+            <td>{{ borrower.totalLoans }}</td>
+            <td class="highlight">{{ borrower.defaultHistory }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

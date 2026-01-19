@@ -1,0 +1,110 @@
+<div class="audit-container">
+  <div class="audit-header">
+    <h1>Audit Trail</h1>
+    <div class="header-actions">
+      <button (click)="loadAuditTrails()" class="btn-refresh">Refresh</button>
+      <button (click)="exportAudit('json')" class="btn-export">Export JSON</button>
+      <button (click)="exportAudit('csv')" class="btn-export">Export CSV</button>
+      <button (click)="clearAuditLog()" class="btn-danger">Clear Log</button>
+    </div>
+  </div>
+
+  <div class="filters-section">
+    <div class="search-bar">
+      <input
+        type="text"
+        [(ngModel)]="searchText"
+        (keyup)="applyFilters()"
+        placeholder="Search by action, entity ID, or details..."
+        class="search-input"
+      />
+      <button *ngIf="searchText" (click)="clearSearch()" class="btn-clear">Clear</button>
+    </div>
+
+    <div class="filter-controls">
+      <div class="filter-group">
+        <label>Module:</label>
+        <select [(ngModel)]="selectedModule" (change)="applyFilters()" class="filter-select">
+          <option [value]="null">All Modules</option>
+          <option *ngFor="let module of modules" [value]="module">{{ module }}</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Sort By:</label>
+        <select [(ngModel)]="sortBy" (change)="sortTrails()" class="filter-select">
+          <option value="timestamp">Timestamp</option>
+          <option value="action">Action</option>
+          <option value="status">Status</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <button (click)="sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'; sortTrails();" class="btn-sort">
+          {{ sortOrder === 'asc' ? '↑' : '↓' }} {{ sortOrder | titlecase }}
+        </button>
+      </div>
+
+      <button *ngIf="selectedModule || searchText" (click)="clearFilters()" class="btn-clear-filters">
+        Clear Filters
+      </button>
+    </div>
+  </div>
+
+  <div class="audit-table-container">
+    <table class="audit-table">
+      <thead>
+        <tr>
+          <th>Timestamp</th>
+          <th>Action</th>
+          <th>Module</th>
+          <th>Entity</th>
+          <th>Status</th>
+          <th>Details</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let trail of filteredTrails" [class.failed]="trail.status === 'failed'">
+          <td class="timestamp">{{ trail.timestamp | date: 'short' }}</td>
+          <td class="action">{{ trail.action }}</td>
+          <td>
+            <span class="module-badge" [style.backgroundColor]="getModuleColor(trail.module)">
+              {{ trail.module }}
+            </span>
+          </td>
+          <td>
+            <span class="entity-info">
+              <span class="entity-type">{{ trail.entityType }}</span>
+              <span class="entity-id">{{ trail.entityId }}</span>
+            </span>
+          </td>
+          <td>
+            <span class="status-badge" [class]="trail.status">
+              {{ trail.status | titlecase }}
+            </span>
+          </td>
+          <td class="details">{{ trail.details || '—' }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div *ngIf="filteredTrails.length === 0" class="empty-state">
+      <p>No audit trails found matching your filters</p>
+    </div>
+  </div>
+
+  <div class="audit-summary">
+    <div class="summary-stat">
+      <span class="stat-label">Total Records</span>
+      <span class="stat-value">{{ auditTrails.length }}</span>
+    </div>
+    <div class="summary-stat">
+      <span class="stat-label">Success</span>
+      <span class="stat-value success">{{ getSuccessCount() }}</span>
+    </div>
+    <div class="summary-stat">
+      <span class="stat-label">Failed</span>
+      <span class="stat-value danger">{{ getFailedCount() }}</span>
+    </div>
+  </div>
+</div>
