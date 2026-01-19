@@ -115,6 +115,20 @@
         </div>
       </div>
     </div>
+
+    <!-- Hilda AI Assistant -->
+    <div class="card hilda-card" (click)="navigateToHilda()">
+      <div class="card-title">🤖 Hilda AI Assistant</div>
+      <div class="card-content">
+        <p class="hilda-description">Get real-time financial analysis and insights on ECL, interest rates, and market trends</p>
+        <div class="hilda-features">
+          <span class="feature">📊 ECL Analysis</span>
+          <span class="feature">📈 Rate Forecasts</span>
+          <span class="feature">💹 Market Insights</span>
+        </div>
+        <button class="btn-hilda">Launch Chat →</button>
+      </div>
+    </div>
   </div>
 
   <div class="empty-state" *ngIf="!loading && !bankingSummary">

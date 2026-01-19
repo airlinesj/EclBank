@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { DataRepositoryService } from '@core/services/data-repository.service';
 import { MacroDataRepositoryService } from '@core/services/macro-data-repository.service';
 import { ECLCalculationService } from '@core/services/ecl-calculation.service';
@@ -26,7 +27,8 @@ export class DashboardComponent implements OnInit {
     private macroRepository: MacroDataRepositoryService,
     private eclCalculation: ECLCalculationService,
     private coreBanking: CoreBankingService,
-    private macroHub: MacroeconomicHubService
+    private macroHub: MacroeconomicHubService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -61,5 +63,9 @@ export class DashboardComponent implements OnInit {
     if (!this.eclSummary || !this.bankingSummary) return 0;
     const totalBalance = this.bankingSummary.totalLoanBalance;
     return totalBalance > 0 ? (this.eclSummary.totalECL / totalBalance) * 100 : 0;
+  }
+
+  navigateToHilda(): void {
+    this.router.navigate(['/reports']);
   }
 }
