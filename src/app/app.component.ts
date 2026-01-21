@@ -13,12 +13,17 @@ export class AppComponent {
   title = 'Banking ECL';
   sidebarOpen = false;
   
-  toggleSidebar(): void {
+  toggleSidebar(event: Event): void {
+    event.stopPropagation();
     this.sidebarOpen = !this.sidebarOpen;
   }
 
   closeSidebar(): void {
     this.sidebarOpen = false;
+  }
+
+  onSidebarClick(event: Event): void {
+    event.stopPropagation();
   }
 
   navigation = [

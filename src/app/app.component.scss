@@ -1,4 +1,5 @@
 // App Component Styles
+// Most styles moved to global styles.scss for better organization
 
 .nav-link {
   display: flex;
@@ -6,7 +7,8 @@
   width: 100%;
   text-decoration: none;
   color: inherit;
-  transition: all 0.2s ease;
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: color;
 
   .nav-text {
     flex: 1;
@@ -17,26 +19,3 @@
   color: white;
 }
 
-// Responsive mobile menu overlay
-@media (max-width: 768px) {
-  .sidebar.mobile-open {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 1001;
-    height: 100vh;
-    width: 280px;
-  }
-}
-
-// Responsive mobile menu overlay
-@media (max-width: 768px) {
-  .sidebar.mobile-open {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 1001;
-    height: 100vh;
-    width: 280px;
-  }
-}

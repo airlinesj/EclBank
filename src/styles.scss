@@ -473,7 +473,9 @@ tbody tr {
   top: 0;
   z-index: 1000;
   box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, width 0.3s ease;
+  transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+  -webkit-font-smoothing: antialiased;
 
   &.collapsed {
     width: 80px;
@@ -570,7 +572,8 @@ tbody tr {
   margin-left: 280px;
   overflow-y: auto;
   padding: $spacing-xl;
-  transition: margin-left 0.3s ease;
+  transition: margin-left 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: margin-left;
 
   &.expanded {
     margin-left: 80px;
@@ -579,10 +582,6 @@ tbody tr {
   @media (max-width: $tablet) {
     margin-left: 0;
     padding: $spacing-lg $spacing-md;
-
-    &.sidebar-open {
-      margin-left: 280px;
-    }
   }
 }
 
@@ -796,10 +795,39 @@ tbody tr {
   font-size: 1.5rem;
   cursor: pointer;
   padding: $spacing-sm;
+  position: absolute;
+  top: $spacing-md;
+  left: $spacing-md;
+  z-index: 1002;
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+  -webkit-tap-highlight-color: transparent;
 
   @media (max-width: $tablet) {
     display: flex;
+    align-items: center;
+    justify-content: center;
   }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+// ============================================================================
+// SIDEBAR BACKDROP OVERLAY (Mobile)
+// ============================================================================
+.sidebar-backdrop {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  animation: fadeIn 0.15s ease-out forwards;
+  -webkit-tap-highlight-color: transparent;
 }
 
 // ============================================================================
@@ -809,14 +837,25 @@ tbody tr {
   .sidebar {
     transform: translateX(-100%);
     z-index: 1001;
+    width: 280px;
+    position: fixed;
 
     &.mobile-open {
       transform: translateX(0);
     }
   }
 
+  .sidebar-backdrop {
+    display: block;
+  }
+
+  .main-layout.sidebar-open {
+    overflow: hidden;
+  }
+
   .main-content {
     margin-left: 0 !important;
+    padding-top: 4rem;
   }
 
   .grid {
@@ -856,6 +895,11 @@ tbody tr {
   }
 
   .sidebar {
-    width: 100%;
+    width: 90vw;
+    max-width: 280px;
+  }
+
+  .main-content {
+    padding-top: 5rem;
   }
 }

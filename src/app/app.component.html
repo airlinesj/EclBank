@@ -1,6 +1,9 @@
-<div class="main-layout">
+<div class="main-layout" [class.sidebar-open]="sidebarOpen">
+  <!-- Sidebar Backdrop (Mobile) -->
+  <div class="sidebar-backdrop" *ngIf="sidebarOpen" (click)="closeSidebar()"></div>
+
   <!-- Sidebar Navigation -->
-  <aside class="sidebar" [ngClass]="{'mobile-open': sidebarOpen}">
+  <aside class="sidebar" [class.mobile-open]="sidebarOpen" (click)="onSidebarClick($event)">
     <div class="sidebar-header">
       <span class="logo">₿</span>
       <span class="sidebar-title">{{ title }}</span>
@@ -25,11 +28,8 @@
   <!-- Main Content -->
   <div class="main-content">
     <!-- Mobile Menu Toggle -->
-    <button class="menu-toggle" (click)="toggleSidebar()" *ngIf="sidebarOpen === false">
-      ☰
-    </button>
-    <button class="menu-toggle" (click)="closeSidebar()" *ngIf="sidebarOpen === true">
-      ✕
+    <button class="menu-toggle" (click)="toggleSidebar($event)" [attr.aria-label]="sidebarOpen ? 'Close menu' : 'Open menu'">
+      {{ sidebarOpen ? '✕' : '☰' }}
     </button>
 
     <router-outlet></router-outlet>
