@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DataRepositoryService } from '@core/services/data-repository.service';
@@ -13,7 +13,7 @@ import { AiChatComponent } from './components/ai-chat.component';
   templateUrl: './reports.component.html',
   styleUrl: './reports.component.scss'
 })
-export class ReportsComponent implements OnInit {
+export class ReportsComponent implements OnInit, OnDestroy {
   summary: ECLSummary | null = null;
   bankingSummary: any = null;
   selectedReport: 'portfolio' | 'risk' | 'forecast' = 'portfolio';
@@ -241,5 +241,11 @@ export class ReportsComponent implements OnInit {
     a.click();
     document.body.removeChild(a);
     window.URL.revokeObjectURL(url);
+  }
+
+  ngOnDestroy(): void {
+    // Clean up data references
+    this.summary = null;
+    this.bankingSummary = null;
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ECLCalculationService } from '@core/services/ecl-calculation.service';
@@ -17,7 +17,7 @@ import { LoanBalance } from '@core/interfaces/banking.interface';
   templateUrl: './ecl.component.html',
   styleUrl: './ecl.component.scss'
 })
-export class EclComponent implements OnInit {
+export class EclComponent implements OnInit, OnDestroy {
   formulas: ECLFormula[] = [];
   selectedFormulaId = 'ECL_STANDARD_001';
   calculations: ECLCalculation[] = [];
@@ -272,8 +272,8 @@ export class EclComponent implements OnInit {
     return lines.join('\n');
   }
 
-  private downloadFile(content: string, filename: string): void {
-    const blob = new Blob([content], { type: 'text/plain' });
+  downloadHTMLReport(html: string, filename: string): void {
+    const blob = new Blob([html], { type: 'text/html' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -282,5 +282,18 @@ export class EclComponent implements OnInit {
     a.click();
     document.body.removeChild(a);
     window.URL.revokeObjectURL(url);
+  }
+
+  ngOnDestroy(): void {
+    // Clean up loading state
+    this.loading = false;
+    // Clear arrays to allow garbage collection
+    this.formulas = [];
+    this.calculations = [];
+    this.dummyLoans = [];
+    this.summary = null;
+    this.selectedDummyLoan = null;
+    this.customResult = null;
+    this.validationErrors = [];
   }
 }

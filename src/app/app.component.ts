@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 
@@ -7,9 +7,10 @@ import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
   standalone: true,
   imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrl: './app.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AppComponent {
+export class AppComponent implements OnDestroy {
   title = 'Banking ECL';
   sidebarOpen = false;
   
@@ -33,4 +34,9 @@ export class AppComponent {
     { label: 'Reports', path: '/reports' },
     { label: 'Audit', path: '/audit' }
   ];
+
+  ngOnDestroy(): void {
+    // Clean up sidebar state
+    this.sidebarOpen = false;
+  }
 }

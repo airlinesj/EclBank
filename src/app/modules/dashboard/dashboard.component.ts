@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { DataRepositoryService } from '@core/services/data-repository.service';
@@ -15,12 +15,13 @@ import { ECLSummary } from '@core/interfaces/ecl.interface';
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   loading = false;
   bankingSummary: any = null;
   eclSummary: ECLSummary | null = null;
   macroVariablesLoaded = false;
   lastUpdateTime: Date | null = null;
+  private loadingPromise: Promise<void> | null = null;
 
   constructor(
     private dataRepository: DataRepositoryService,
@@ -78,5 +79,14 @@ export class DashboardComponent implements OnInit {
 
   navigateToHilda(): void {
     this.router.navigate(['/reports']);
+  }
+
+  ngOnDestroy(): void {
+    // Clean up any ongoing loading
+    this.loading = false;
+    this.loadingPromise = null;
+    // Clear references to allow garbage collection
+    this.bankingSummary = null;
+    this.eclSummary = null;
   }
 }
