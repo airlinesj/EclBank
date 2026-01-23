@@ -1,21 +1,23 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DataRepositoryService } from '@core/services/data-repository.service';
 import { ECLCalculationService } from '@core/services/ecl-calculation.service';
 import { ECLSummary } from '@core/interfaces/ecl.interface';
+import { AiChatComponent } from './components/ai-chat.component';
 
 @Component({
   selector: 'app-reports',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, AiChatComponent],
   templateUrl: './reports.component.html',
   styleUrl: './reports.component.scss'
 })
-export class ReportsComponent implements OnInit {
+export class ReportsComponent implements OnInit, OnDestroy {
   summary: ECLSummary | null = null;
   bankingSummary: any = null;
   selectedReport: 'portfolio' | 'risk' | 'forecast' = 'portfolio';
+  activeTab: 'reports' | 'ai-chat' = 'reports';
 
   constructor(
     private dataRepository: DataRepositoryService,
@@ -239,5 +241,11 @@ export class ReportsComponent implements OnInit {
     a.click();
     document.body.removeChild(a);
     window.URL.revokeObjectURL(url);
+  }
+
+  ngOnDestroy(): void {
+    // Clean up data references
+    this.summary = null;
+    this.bankingSummary = null;
   }
 }

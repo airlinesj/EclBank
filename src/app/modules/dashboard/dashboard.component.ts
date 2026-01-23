@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { DataRepositoryService } from '@core/services/data-repository.service';
 import { MacroDataRepositoryService } from '@core/services/macro-data-repository.service';
 import { ECLCalculationService } from '@core/services/ecl-calculation.service';
@@ -14,22 +15,30 @@ import { ECLSummary } from '@core/interfaces/ecl.interface';
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   loading = false;
   bankingSummary: any = null;
   eclSummary: ECLSummary | null = null;
   macroVariablesLoaded = false;
   lastUpdateTime: Date | null = null;
+  private loadingPromise: Promise<void> | null = null;
 
   constructor(
     private dataRepository: DataRepositoryService,
     private macroRepository: MacroDataRepositoryService,
     private eclCalculation: ECLCalculationService,
     private coreBanking: CoreBankingService,
-    private macroHub: MacroeconomicHubService
+    private macroHub: MacroeconomicHubService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
+    // Initialize with dummy data first
+    this.bankingSummary = this.dataRepository.getSummaryStatistics();
+    this.eclSummary = this.eclCalculation.calculatePortfolioECL('ECL_STANDARD_001');
+    this.lastUpdateTime = new Date();
+    
+    // Then attempt to load fresh data
     this.loadDashboardData();
   }
 
@@ -37,29 +46,47 @@ export class DashboardComponent implements OnInit {
     this.loading = true;
 
     // Load banking data
-    this.coreBanking.extractAllBankingData().then(data => {
-      this.dataRepository.updateBankingData(data);
-      this.bankingSummary = this.dataRepository.getSummaryStatistics();
-      this.lastUpdateTime = new Date();
+    this.coreBanking.extractAllBankingData()
+      .then(data => {
+        this.dataRepository.updateBankingData(data);
+        this.bankingSummary = this.dataRepository.getSummaryStatistics();
+        this.lastUpdateTime = new Date();
 
-      // Load macro data
-      return this.macroHub.extractAllMacroVariables();
-    }).then(macroData => {
-      this.macroRepository.updateMacroData(macroData);
-      this.macroVariablesLoaded = true;
+        // Load macro data
+        return this.macroHub.extractAllMacroVariables();
+      })
+      .then(macroData => {
+        this.macroRepository.updateMacroData(macroData);
+        this.macroVariablesLoaded = true;
 
-      // Calculate ECL
-      this.eclSummary = this.eclCalculation.calculatePortfolioECL('ECL_STANDARD_001');
-    }).catch(error => {
-      console.error('Error loading dashboard data:', error);
-    }).finally(() => {
-      this.loading = false;
-    });
+        // Calculate ECL
+        this.eclSummary = this.eclCalculation.calculatePortfolioECL('ECL_STANDARD_001');
+      })
+      .catch(error => {
+        console.error('Error loading dashboard data:', error);
+        // Data already initialized with dummy data, so this is not critical
+      })
+      .finally(() => {
+        this.loading = false;
+      });
   }
 
   getECLAsPercentageOfPortfolio(): number {
     if (!this.eclSummary || !this.bankingSummary) return 0;
     const totalBalance = this.bankingSummary.totalLoanBalance;
     return totalBalance > 0 ? (this.eclSummary.totalECL / totalBalance) * 100 : 0;
+  }
+
+  navigateToHilda(): void {
+    this.router.navigate(['/reports']);
+  }
+
+  ngOnDestroy(): void {
+    // Clean up any ongoing loading
+    this.loading = false;
+    this.loadingPromise = null;
+    // Clear references to allow garbage collection
+    this.bankingSummary = null;
+    this.eclSummary = null;
   }
 }

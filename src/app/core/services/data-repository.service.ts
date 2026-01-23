@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { BankingDataExtractionResponse } from '../interfaces/banking.interface';
+import { DummyDataService } from './dummy-data.service';
 
 /**
  * Central Data Repository Service
@@ -19,12 +20,12 @@ export class DataRepositoryService {
   public lastUpdateTime$ = this.lastUpdateTime.asObservable();
   public dataVersion$ = this.dataVersion.asObservable();
 
-  constructor() {
+  constructor(private dummyDataService: DummyDataService) {
     this.initializeStorage();
   }
 
   /**
-   * Initialize storage from localStorage if available
+   * Initialize storage from localStorage if available, otherwise load dummy data
    */
   private initializeStorage(): void {
     const storedData = localStorage.getItem('banking_data');
@@ -34,8 +35,22 @@ export class DataRepositoryService {
         this.bankingData.next(parsedData);
       } catch (error) {
         console.error('Failed to load stored banking data:', error);
+        this.loadDummyData();
       }
+    } else {
+      // Load dummy data if no stored data exists
+      this.loadDummyData();
     }
+  }
+
+  /**
+   * Load dummy data
+   */
+  private loadDummyData(): void {
+    const dummyData = this.dummyDataService.generateDummyBankingData();
+    this.bankingData.next(dummyData);
+    this.lastUpdateTime.next(new Date());
+    this.persistToStorage(dummyData);
   }
 
   /**

@@ -2,7 +2,7 @@
   <div class="dashboard-header">
     <h1>Banking ECL System Dashboard</h1>
     <button (click)="loadDashboardData()" [disabled]="loading" class="btn-refresh">
-      {{ loading ? 'Loading...' : 'Refresh Data' }}
+      {{ loading ? 'Refreshing...' : 'Refresh Data' }}
     </button>
   </div>
 
@@ -11,7 +11,7 @@
     <p>Loading dashboard data...</p>
   </div>
 
-  <div class="dashboard-grid" *ngIf="!loading && bankingSummary">
+  <div class="dashboard-grid" *ngIf="bankingSummary">
     <!-- Banking Summary Cards -->
     <div class="card summary-card">
       <div class="card-title">Portfolio Summary</div>
@@ -115,9 +115,23 @@
         </div>
       </div>
     </div>
+
+    <!-- Hilda AI Assistant -->
+    <div class="card hilda-card" (click)="navigateToHilda()">
+      <div class="card-title">🤖 Hilda AI Assistant</div>
+      <div class="card-content">
+        <p class="hilda-description">Get real-time financial analysis and insights on ECL, interest rates, and market trends</p>
+        <div class="hilda-features">
+          <span class="feature">📊 ECL Analysis</span>
+          <span class="feature">📈 Rate Forecasts</span>
+          <span class="feature">💹 Market Insights</span>
+        </div>
+        <button class="btn-hilda">Launch Chat →</button>
+      </div>
+    </div>
   </div>
 
-  <div class="empty-state" *ngIf="!loading && !bankingSummary">
-    <p>Click "Refresh Data" to load banking and macro data</p>
+  <div class="empty-state" *ngIf="!bankingSummary">
+    <p>Loading...</p>
   </div>
 </div>

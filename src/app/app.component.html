@@ -1,9 +1,17 @@
-<div class="main-layout">
+<div class="main-layout" [class.sidebar-open]="sidebarOpen" *ngIf="!isLoginPage">
+  <!-- Sidebar Backdrop (Mobile) -->
+  <div class="sidebar-backdrop" *ngIf="sidebarOpen" (click)="closeSidebar()"></div>
+
   <!-- Sidebar Navigation -->
-  <aside class="sidebar" [ngClass]="{'mobile-open': sidebarOpen}">
+  <aside class="sidebar" [class.mobile-open]="sidebarOpen" (click)="onSidebarClick($event)">
     <div class="sidebar-header">
-      <span class="logo">₿</span>
-      <span class="sidebar-title">{{ title }}</span>
+      <div class="logo-img">
+        <span class="material-symbols-outlined">account_balance</span>
+      </div>
+      <div class="sidebar-branding">
+        <p class="nbs-text">NBS BANK</p>
+        <p class="sidebar-title">Banking ECL</p>
+      </div>
     </div>
 
     <ul class="nav-menu">
@@ -12,26 +20,32 @@
           [routerLinkActive]="'active'"
           (click)="closeSidebar()">
         <a [routerLink]="item.path" class="nav-link">
+          <span class="material-symbols-outlined">{{ item.icon }}</span>
           <span class="nav-text">{{ item.label }}</span>
         </a>
       </li>
     </ul>
 
+    <button class="logout-btn" (click)="logout()" [attr.aria-label]="'Logout'">
+      <span class="material-symbols-outlined">logout</span>
+      <span class="nav-text">Logout</span>
+    </button>
+
     <div class="sidebar-footer">
-      <p class="text-sm text-light">Banking ECL v1.0</p>
+      <p class="text-sm">Banking ECL v1.0</p>
     </div>
   </aside>
 
   <!-- Main Content -->
   <div class="main-content">
     <!-- Mobile Menu Toggle -->
-    <button class="menu-toggle" (click)="toggleSidebar()" *ngIf="sidebarOpen === false">
-      ☰
-    </button>
-    <button class="menu-toggle" (click)="closeSidebar()" *ngIf="sidebarOpen === true">
-      ✕
+    <button class="menu-toggle" (click)="toggleSidebar($event)" [attr.aria-label]="sidebarOpen ? 'Close menu' : 'Open menu'">
+      <span class="material-symbols-outlined">{{ sidebarOpen ? 'close' : 'menu' }}</span>
     </button>
 
     <router-outlet></router-outlet>
   </div>
 </div>
+
+<!-- Login Page (no sidebar) -->
+<router-outlet *ngIf="isLoginPage"></router-outlet>

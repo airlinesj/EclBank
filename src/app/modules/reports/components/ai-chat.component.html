@@ -1,0 +1,105 @@
+<div class="ai-chat-container">
+  <div class="chat-header">
+    <div class="header-content">
+      <h2>Hilda - AI Financial Assistant</h2>
+      <p class="subtitle">Powered by Gemini API</p>
+    </div>
+    <div class="header-actions">
+      <button (click)="toggleDownloadMenu()" class="btn-download" title="Download chat">
+        ⬇ Download
+      </button>
+      <div *ngIf="showDownloadMenu" class="download-menu">
+        <button (click)="downloadAsJSON()" class="download-option">
+          📄 JSON
+        </button>
+        <button (click)="downloadAsCSV()" class="download-option">
+          📊 CSV
+        </button>
+        <button (click)="downloadAsHTML()" class="download-option">
+          🌐 HTML
+        </button>
+      </div>
+      <button (click)="clearChat()" class="btn-clear" title="Clear chat">
+        🗑 Clear
+      </button>
+    </div>
+  </div>
+
+  <div class="chat-messages" #chatMessages>
+    <div *ngIf="messages.length === 0" class="welcome-section">
+      <div class="welcome-content">
+        <h2>Welcome to Hilda</h2>
+        <p>Your AI Financial Assistant for ECL analysis, market trends, and financial forecasting</p>
+        
+        <div class="capabilities">
+          <h3>Capabilities:</h3>
+          <ul>
+            <li>📊 ECL Analysis & Loss Predictions</li>
+            <li>📈 Interest Rate Trends & Forecasts</li>
+            <li>💹 Stock Market Insights & Analysis</li>
+            <li>🌍 Global Financial Data & World Bank Info</li>
+            <li>📉 Risk Assessment & Default Probability</li>
+            <li>🔮 12-Month Financial Forecasts</li>
+          </ul>
+        </div>
+
+        <h3>Try asking:</h3>
+        <div class="suggested-questions">
+          <button *ngFor="let question of suggestedQuestions" 
+                  (click)="sendSuggestedQuestion(question)"
+                  class="suggestion-btn">
+            {{ question }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div *ngFor="let message of messages" class="chat-message" [ngClass]="message.role">
+      <div class="message-avatar">
+        {{ message.role === 'user' ? '👤' : '🤖' }}
+      </div>
+      <div class="message-content">
+        <div class="message-header">
+          <span class="sender-name">{{ message.role === 'user' ? 'You' : 'Hilda' }}</span>
+          <span class="message-time">{{ message.timestamp | date: 'short' }}</span>
+        </div>
+        <div class="message-text">
+          {{ message.content }}
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="isLoading" class="loading-indicator">
+      <div class="typing-dots">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <div class="loading-text">
+        <p>Hilda is analyzing...</p>
+        <p class="elapsed-time" [ngClass]="{'delayed': elapsedSeconds >= 5}">{{ elapsedSeconds }}s</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="chat-input-area">
+    <div class="input-wrapper">
+      <textarea 
+        [(ngModel)]="userMessage"
+        (keypress)="onKeyPress($event)"
+        placeholder="Ask me about ECL, interest rates, market trends, loss predictions..."
+        class="message-input"
+        [disabled]="isLoading"
+        rows="3"></textarea>
+      <button 
+        (click)="sendMessage()"
+        [disabled]="isLoading || !userMessage.trim()"
+        class="btn-send">
+        {{ isLoading ? '⏳' : '📤' }} Send
+      </button>
+    </div>
+    <div class="input-hints">
+      <span>💡 Press Shift+Enter for new line, Enter to send</span>
+    </div>
+  </div>
+</div>

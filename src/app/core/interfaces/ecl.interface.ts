@@ -73,3 +73,29 @@ export interface LoanTypeECLSummary {
   loanCount: number;
   avgECL: number;
 }
+
+/**
+ * ECL Calculation Input Interface
+ * Used for custom ECL calculations with user inputs
+ */
+export interface ECLCalculationInput {
+  pd: number; // Probability of Default (0-1 or 0-100%)
+  lgd: number; // Loss Given Default (0-1 or 0-100%)
+  ead: number; // Exposure at Default (in currency units)
+  effectiveInterestRate?: number; // Effective interest rate (optional)
+}
+
+/**
+ * ECL Calculation Result Interface
+ * Contains the output of ECL calculation
+ */
+export interface ECLCalculationResult {
+  ecl: number;
+  pd: number;
+  lgd: number;
+  ead: number;
+  effectiveInterestRate: number;
+  formula: string;
+  calculationDate: Date;
+  source: 'dummy_data' | 'user_input' | 'combined';
+}

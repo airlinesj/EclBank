@@ -31,6 +31,7 @@ export interface BorrowerInfo {
   borrowerId: string;
   name: string;
   type: 'individual' | 'corporate';
+  phoneNumber?: string;
   sector?: string;
   creditScore?: number;
   totalLoans: number;

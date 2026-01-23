@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DataRepositoryService } from '@core/services/data-repository.service';
@@ -13,7 +13,7 @@ import { LoanBalance, Transaction, BorrowerInfo } from '@core/interfaces/banking
   templateUrl: './banking.component.html',
   styleUrl: './banking.component.scss'
 })
-export class BankingComponent implements OnInit {
+export class BankingComponent implements OnInit, OnDestroy {
   loans: LoanBalance[] = [];
   transactions: Transaction[] = [];
   borrowers: BorrowerInfo[] = [];
@@ -104,5 +104,15 @@ export class BankingComponent implements OnInit {
     a.click();
     document.body.removeChild(a);
     window.URL.revokeObjectURL(url);
+  }
+
+  ngOnDestroy(): void {
+    // Clean up loading state
+    this.loading = false;
+    // Clear data arrays to allow garbage collection
+    this.loans = [];
+    this.transactions = [];
+    this.borrowers = [];
+    this.selectedLoanId = null;
   }
 }

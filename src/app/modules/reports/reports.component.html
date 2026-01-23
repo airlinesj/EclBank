@@ -1,6 +1,18 @@
 <div class="reports-container">
   <div class="reports-header">
     <h1>Reports & Analytics</h1>
+    <div class="report-tabs">
+      <button class="tab-btn" [ngClass]="{'active': activeTab === 'reports'}" (click)="activeTab = 'reports'">
+        📊 Reports
+      </button>
+      <button class="tab-btn" [ngClass]="{'active': activeTab === 'ai-chat'}" (click)="activeTab = 'ai-chat'">
+        🤖 Hilda AI Assistant
+      </button>
+    </div>
+  </div>
+
+  <!-- Reports Section -->
+  <div *ngIf="activeTab === 'reports'" class="reports-section">
     <div class="report-actions">
       <select [(ngModel)]="selectedReport" class="report-select">
         <option value="portfolio">Portfolio Report</option>
@@ -9,9 +21,8 @@
       </select>
       <button (click)="generateReport()" class="btn-generate">Generate Report</button>
     </div>
-  </div>
 
-  <div class="report-preview">
+    <div class="report-preview">
     <!-- Portfolio Report Preview -->
     <div *ngIf="selectedReport === 'portfolio'" class="report-content">
       <h2>Portfolio Report</h2>
@@ -144,5 +155,11 @@
         </tbody>
       </table>
     </div>
+  </div>
+  </div>
+
+  <!-- AI Chat Section -->
+  <div *ngIf="activeTab === 'ai-chat'" class="ai-chat-section">
+    <app-ai-chat></app-ai-chat>
   </div>
 </div>

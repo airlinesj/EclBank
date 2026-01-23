@@ -1,0 +1,336 @@
+.login-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f4f7f6 0%, #eef1f0 100%);
+  padding: 20px;
+  font-family: 'Inter', sans-serif;
+}
+
+.login-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  z-index: 1;
+}
+
+.login-card {
+  background: white;
+  border-radius: 16px;
+  padding: 48px 40px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e0e7e1;
+  animation: slideInUp 0.4s ease-out;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Header & Branding */
+.login-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.nbs-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  background: linear-gradient(135deg, #00713d 0%, #004d2a 100%);
+  border-radius: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 10px 30px rgba(0, 113, 61, 0.2);
+
+  .material-symbols-outlined {
+    font-size: 40px;
+    color: white;
+  }
+}
+
+.nbs-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 8px 0;
+  letter-spacing: 2px;
+}
+
+.nbs-subtitle {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0;
+  font-weight: 500;
+}
+
+/* Form Styles */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  &.checkbox-group {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    margin: 8px 0;
+  }
+}
+
+.form-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e293b;
+  letter-spacing: 0.3px;
+}
+
+.form-control {
+  padding: 12px 16px;
+  border: 1px solid #e0e7e1;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  color: #1e293b;
+  background-color: #f4f7f6;
+  transition: all 0.2s ease;
+
+  &:focus {
+    outline: none;
+    background-color: white;
+    border-color: #00713d;
+    box-shadow: 0 0 0 3px rgba(0, 113, 61, 0.1);
+  }
+
+  &::placeholder {
+    color: #94a3b8;
+  }
+
+  &.is-invalid {
+    border-color: #ef4444;
+    background-color: rgba(239, 68, 68, 0.04);
+
+    &:focus {
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+    }
+  }
+}
+
+.form-error {
+  font-size: 12px;
+  color: #ef4444;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Checkbox */
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkbox-input {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #00713d;
+}
+
+.checkbox-text {
+  font-size: 14px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+/* Alerts */
+.alert {
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+
+  &.alert-danger {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: #dc2626;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+
+    .material-symbols-outlined {
+      font-size: 20px;
+    }
+  }
+}
+
+/* Submit Button */
+.btn-login {
+  padding: 12px 24px;
+  height: 48px;
+  background: linear-gradient(135deg, #00713d 0%, #004d2a 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 10px 30px rgba(0, 113, 61, 0.15);
+  letter-spacing: 0.3px;
+
+  .material-symbols-outlined {
+    font-size: 20px;
+  }
+
+  &:hover:not(:disabled) {
+    box-shadow: 0 15px 40px rgba(0, 113, 61, 0.25);
+    transform: translateY(-2px);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+}
+
+.spinner-small {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Footer Links */
+.login-footer {
+  text-align: center;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #e0e7e1;
+}
+
+.footer-text {
+  margin: 0;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.link {
+  color: #00713d;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: #004d2a;
+    text-decoration: underline;
+  }
+}
+
+.divider {
+  color: #cbd5e1;
+  margin: 0 8px;
+}
+
+/* Demo Credentials */
+.demo-info {
+  background: linear-gradient(135deg, rgba(181, 211, 51, 0.08) 0%, rgba(0, 113, 61, 0.05) 100%);
+  border: 1px solid rgba(181, 211, 51, 0.2);
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 24px;
+  font-size: 12px;
+}
+
+.demo-text {
+  margin: 0 0 8px 0;
+  color: #1e293b;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.demo-details {
+  margin: 0;
+  color: #64748b;
+  line-height: 1.6;
+
+  strong {
+    color: #1e293b;
+  }
+}
+
+/* Background Gradient */
+.background-gradient {
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(181, 211, 51, 0.1) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .login-card {
+    padding: 32px 24px;
+  }
+
+  .nbs-title {
+    font-size: 24px;
+  }
+
+  .nbs-logo {
+    width: 60px;
+    height: 60px;
+
+    .material-symbols-outlined {
+      font-size: 32px;
+    }
+  }
+
+  .login-header {
+    margin-bottom: 32px;
+  }
+
+  .form-control {
+    font-size: 16px; // Prevents iOS zoom
+  }
+}
