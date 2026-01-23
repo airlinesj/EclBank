@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } 
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -21,13 +22,14 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   constructor(
     private formBuilder: FormBuilder,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
     this.initializeForm();
     // If already logged in, redirect to dashboard
-    if (localStorage.getItem('nbs_auth_token')) {
+    if (this.authService.isLoggedIn()) {
       this.router.navigate(['/dashboard']);
     }
   }
@@ -53,24 +55,24 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
 
     this.loading = true;
+    const { email, password } = this.loginForm.value;
 
-    // Simulate authentication delay
-    setTimeout(() => {
-      const { email, password } = this.loginForm.value;
-
-      // Simple demo authentication - in production, call a real API
-      if (email && password.length >= 6) {
-        // Store auth token (in real app, this comes from server)
-        localStorage.setItem('nbs_auth_token', `token_${Date.now()}`);
-        localStorage.setItem('nbs_user_email', email);
-        
-        this.loading = false;
-        this.router.navigate(['/dashboard']);
-      } else {
-        this.error = 'Invalid credentials';
-        this.loading = false;
-      }
-    }, 800);
+    this.authService.login(email, password)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (success) => {
+          this.loading = false;
+          if (success) {
+            this.router.navigate(['/dashboard']);
+          } else {
+            this.error = 'Invalid credentials';
+          }
+        },
+        error: () => {
+          this.loading = false;
+          this.error = 'Login failed. Please try again.';
+        }
+      });
   }
 
   ngOnDestroy(): void {

@@ -481,7 +481,6 @@ tbody tr {
   color: white;
   padding: 20px 24px;
   height: 100vh;
-  overflow-y: auto;
   position: fixed;
   left: 0;
   top: 0;
@@ -492,6 +491,9 @@ tbody tr {
   -webkit-font-smoothing: antialiased;
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
 
   &.collapsed {
     width: 80px;
@@ -519,6 +521,7 @@ tbody tr {
     padding-bottom: 20px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.15);
     flex-wrap: wrap;
+    flex-shrink: 0;
 
     .logo-img {
       width: 48px;
@@ -557,6 +560,9 @@ tbody tr {
 
   .nav-menu {
     list-style: none;
+    margin: 0;
+    padding: 0;
+    flex: 1;
 
     .nav-item {
       display: flex;
@@ -598,8 +604,13 @@ tbody tr {
     }
   }
 
-  .sidebar-footer {
+  .logout-btn {
+    flex-shrink: 0;
     margin-top: auto;
+  }
+
+  .sidebar-footer {
+    flex-shrink: 0;
     padding-top: 20px;
     border-top: 1px solid rgba(255, 255, 255, 0.15);
     font-size: 0.75rem;

@@ -25,6 +25,41 @@
   color: white;
 }
 
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 16px;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 8px;
+
+  .material-symbols-outlined {
+    font-size: 1.25rem;
+    font-weight: 400;
+  }
+
+  .nav-text {
+    flex: 1;
+    text-align: left;
+  }
+
+  &:hover {
+    color: white;
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  &:active {
+    background-color: rgba(255, 255, 255, 0.15);
+  }
+}
+
 .material-symbols-outlined {
   font-family: 'Material Symbols Outlined';
   font-weight: normal;
@@ -37,3 +72,4 @@
   word-wrap: normal;
   direction: ltr;
 }
+

@@ -1,6 +1,7 @@
 import { Component, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
+import { AuthService } from './core/services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -14,7 +15,10 @@ export class AppComponent implements OnDestroy {
   title = 'Banking ECL';
   sidebarOpen = false;
   
-  constructor(public router: Router) {}
+  constructor(
+    public router: Router,
+    private authService: AuthService
+  ) {}
 
   get isLoginPage(): boolean {
     return this.router.url.includes('/login');
@@ -33,6 +37,11 @@ export class AppComponent implements OnDestroy {
     event.stopPropagation();
   }
 
+  logout(): void {
+    this.sidebarOpen = false;
+    this.authService.logout();
+  }
+
   navigation = [
     { label: 'Dashboard', path: '/dashboard', icon: 'dashboard' },
     { label: 'Banking', path: '/banking', icon: 'account_balance' },
@@ -46,3 +55,4 @@ export class AppComponent implements OnDestroy {
     this.sidebarOpen = false;
   }
 }
+
