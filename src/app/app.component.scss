@@ -1,5 +1,5 @@
-// App Component Styles
-// Most styles moved to global styles.scss for better organization
+// App Component Styles - NBS Branding
+// Material Symbols icons integrated with branding
 
 .nav-link {
   display: flex;
@@ -9,6 +9,12 @@
   color: inherit;
   transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   will-change: color;
+  gap: 12px;
+
+  .material-symbols-outlined {
+    font-size: 1.25rem;
+    font-weight: 400;
+  }
 
   .nav-text {
     flex: 1;
@@ -19,3 +25,15 @@
   color: white;
 }
 
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+}

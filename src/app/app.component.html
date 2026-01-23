@@ -5,8 +5,13 @@
   <!-- Sidebar Navigation -->
   <aside class="sidebar" [class.mobile-open]="sidebarOpen" (click)="onSidebarClick($event)">
     <div class="sidebar-header">
-      <span class="logo">₿</span>
-      <span class="sidebar-title">{{ title }}</span>
+      <div class="logo-img">
+        <span class="material-symbols-outlined">account_balance</span>
+      </div>
+      <div class="sidebar-branding">
+        <p class="nbs-text">NBS BANK</p>
+        <p class="sidebar-title">Banking ECL</p>
+      </div>
     </div>
 
     <ul class="nav-menu">
@@ -15,13 +20,14 @@
           [routerLinkActive]="'active'"
           (click)="closeSidebar()">
         <a [routerLink]="item.path" class="nav-link">
+          <span class="material-symbols-outlined">{{ item.icon }}</span>
           <span class="nav-text">{{ item.label }}</span>
         </a>
       </li>
     </ul>
 
     <div class="sidebar-footer">
-      <p class="text-sm text-light">Banking ECL v1.0</p>
+      <p class="text-sm">Banking ECL v1.0</p>
     </div>
   </aside>
 
@@ -29,7 +35,7 @@
   <div class="main-content">
     <!-- Mobile Menu Toggle -->
     <button class="menu-toggle" (click)="toggleSidebar($event)" [attr.aria-label]="sidebarOpen ? 'Close menu' : 'Open menu'">
-      {{ sidebarOpen ? '✕' : '☰' }}
+      <span class="material-symbols-outlined">{{ sidebarOpen ? 'close' : 'menu' }}</span>
     </button>
 
     <router-outlet></router-outlet>

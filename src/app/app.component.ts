@@ -28,11 +28,11 @@ export class AppComponent implements OnDestroy {
   }
 
   navigation = [
-    { label: 'Dashboard', path: '/dashboard' },
-    { label: 'Banking', path: '/banking' },
-    { label: 'ECL', path: '/ecl' },
-    { label: 'Reports', path: '/reports' },
-    { label: 'Audit', path: '/audit' }
+    { label: 'Dashboard', path: '/dashboard', icon: 'dashboard' },
+    { label: 'Banking', path: '/banking', icon: 'account_balance' },
+    { label: 'ECL', path: '/ecl', icon: 'calculate' },
+    { label: 'Reports', path: '/reports', icon: 'assessment' },
+    { label: 'Audit', path: '/audit', icon: 'history' }
   ];
 
   ngOnDestroy(): void {

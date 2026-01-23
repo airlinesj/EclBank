@@ -7,41 +7,45 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
+  margin-bottom: 32px;
   flex-wrap: wrap;
   gap: 20px;
 
   h1 {
     margin: 0;
     font-size: 28px;
-    color: #333;
+    color: #1e293b;
     flex: 1;
+    font-weight: 700;
   }
 
   .report-tabs {
     display: flex;
-    gap: 10px;
+    gap: 8px;
+    border-bottom: 1px solid #e0e7e1;
 
     .tab-btn {
-      padding: 10px 20px;
-      background: #f0f9ff;
-      color: #0369a1;
-      border: 2px solid #bae6fd;
-      border-radius: 0.5rem;
+      padding: 16px 32px;
+      background: transparent;
+      color: #64748b;
+      border: none;
+      border-bottom: 4px solid transparent;
+      border-radius: 0;
       cursor: pointer;
-      font-weight: 500;
+      font-weight: 600;
       transition: all 0.2s ease;
-      font-size: 0.875rem;
+      font-size: 0.95rem;
+      letter-spacing: 0.3px;
 
       &:hover {
-        background: #e0f2fe;
-        border-color: #0ea5e9;
+        color: #00713d;
+        background-color: rgba(0, 113, 61, 0.03);
       }
 
       &.active {
-        background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
-        color: white;
-        border-color: #0284c7;
+        color: #00713d;
+        border-bottom-color: #b5d333;
+        background-color: transparent;
       }
     }
   }

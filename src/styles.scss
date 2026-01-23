@@ -3,25 +3,27 @@
 // ============================================================================
 
 // ============================================================================
-// COLOR PALETTE - Sky Blue Banking Theme
+// COLOR PALETTE - NBS Zimbabwe Brand Theme
 // ============================================================================
-$primary-color: #0ea5e9;        // Sky Blue
-$primary-dark: #0284c7;         // Darker Sky Blue
-$primary-light: #38bdf8;        // Lighter Sky Blue
-$secondary-color: #10b981;      // Emerald (for positive/success)
-$secondary-light: #10b981;
-$accent-color: #f59e0b;         // Amber (for warnings)
+$primary-color: #00713d;        // NBS Corporate Green
+$primary-dark: #004d2a;         // Darker NBS Green
+$primary-light: #2d9968;        // Lighter NBS Green
+$accent-color: #b5d333;         // NBS Branding Lime
+$accent-light: #d4e689;         // Lighter Lime
+$secondary-color: #00713d;      // Success uses NBS Green
+$secondary-light: #b5d333;
+$warning-color: #f59e0b;        // Amber (for warnings)
 $danger-color: #ef4444;         // Red (for errors/defaults)
-$dark-bg: #0f172a;              // Dark blue-black
-$darker-bg: #0c0f1a;            // Even darker
-$light-bg: #f0f9ff;             // Light sky blue (changed from slate)
+$dark-bg: #1a2e23;              // Dark green-gray
+$darker-bg: #0f1a15;            // Even darker
+$light-bg: #f4f7f6;             // Light modern gray (NBS spec)
 $card-bg: #ffffff;              // White
-$sidebar-bg: #0369a1;           // Sky blue sidebar
+$sidebar-bg: #00713d;           // NBS Corporate Green
 $text-primary: #1e293b;         // Dark slate
 $text-secondary: #64748b;       // Medium slate
 $text-light: #94a3b8;           // Light slate
-$border-color: #bae6fd;         // Light sky blue border
-$border-dark: #7dd3fc;
+$border-color: #e0e7e1;         // Light neutral border
+$border-dark: #c7d0c8;
 
 // ============================================================================
 // RESPONSIVE BREAKPOINTS
@@ -32,14 +34,21 @@ $desktop: 1024px;
 $lg-desktop: 1280px;
 
 // ============================================================================
-// SPACING - INCREASED PADDING
+// SPACING - INCREASED PADDING FOR MODERN 'THICK' LAYOUT
 // ============================================================================
 $spacing-xs: 0.5rem;     // 8px
 $spacing-sm: 0.75rem;    // 12px
-$spacing-md: 1.5rem;     // 24px
-$spacing-lg: 2rem;       // 32px
-$spacing-xl: 3rem;       // 48px
+$spacing-md: 1rem;       // 16px
+$spacing-lg: 2rem;       // 32px (increased for modern layout)
+$spacing-xl: 2rem;       // 32px
 $spacing-2xl: 4rem;      // 64px
+
+// ============================================================================
+// BORDER RADIUS - MODERN SOFT FEEL
+// ============================================================================
+$radius-btn: 8px;        // Buttons
+$radius-card: 16px;      // Cards (soft, modern feel)
+$radius-input: 8px;      // Form inputs
 
 // ============================================================================
 // RESETS & DEFAULTS
@@ -52,13 +61,13 @@ $spacing-2xl: 4rem;      // 64px
 
 html, body {
   height: 100%;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   color: $text-primary;
   background-color: $light-bg;
 }
 
 body {
-  background: linear-gradient(135deg, $light-bg 0%, #f1f5f9 100%);
+  background: linear-gradient(135deg, $light-bg 0%, #fafbfa 100%);
   min-height: 100vh;
 }
 
@@ -130,10 +139,10 @@ a {
 button, input[type="button"], input[type="submit"] {
   font-family: inherit;
   font-size: 1rem;
-  font-weight: 500;
-  padding: $spacing-sm $spacing-lg;
+  font-weight: 600;
+  padding: 12px 24px;
   border: none;
-  border-radius: 0.5rem;
+  border-radius: $radius-btn;
   cursor: pointer;
   transition: all 0.2s ease;
   display: inline-flex;
@@ -143,7 +152,7 @@ button, input[type="button"], input[type="submit"] {
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.2);
+    box-shadow: 0 10px 30px rgba(0, 113, 61, 0.15);
   }
 
   &:active {
@@ -162,7 +171,7 @@ button, input[type="button"], input[type="submit"] {
   color: white;
 
   &:hover:not(:disabled) {
-    background: linear-gradient(135deg, $primary-dark 0%, #3730a3 100%);
+    background: linear-gradient(135deg, $primary-dark 0%, #002d1f 100%);
   }
 }
 
@@ -172,17 +181,17 @@ button, input[type="button"], input[type="submit"] {
   border: 1px solid $border-color;
 
   &:hover:not(:disabled) {
-    background-color: #f1f5f9;
+    background-color: #f9fbfa;
     border-color: $primary-color;
   }
 }
 
 .btn-success {
-  background-color: $secondary-color;
+  background-color: $primary-color;
   color: white;
 
   &:hover:not(:disabled) {
-    background-color: darken($secondary-color, 10%);
+    background-color: $primary-dark;
   }
 }
 
@@ -196,12 +205,12 @@ button, input[type="button"], input[type="submit"] {
 }
 
 .btn-sm {
-  padding: $spacing-xs $spacing-md;
+  padding: 8px 16px;
   font-size: 0.875rem;
 }
 
 .btn-lg {
-  padding: $spacing-md $spacing-2xl;
+  padding: 16px 32px;
   font-size: 1.125rem;
 }
 
@@ -211,9 +220,9 @@ button, input[type="button"], input[type="submit"] {
 input, select, textarea {
   font-family: inherit;
   font-size: 1rem;
-  padding: $spacing-sm $spacing-md;
+  padding: 12px 16px;
   border: 1px solid $border-color;
-  border-radius: 0.5rem;
+  border-radius: $radius-input;
   background-color: $card-bg;
   color: $text-primary;
   transition: all 0.2s ease;
@@ -222,7 +231,7 @@ input, select, textarea {
   &:focus {
     outline: none;
     border-color: $primary-color;
-    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+    box-shadow: 0 0 0 3px rgba(0, 113, 61, 0.1);
     background-color: white;
   }
 
@@ -258,23 +267,23 @@ label {
 }
 
 // ============================================================================
-// CARDS & CONTAINERS
+// CARDS & CONTAINERS - MODERN 'THICK' LAYOUT
 // ============================================================================
 .card {
   background-color: $card-bg;
-  border-radius: 0.75rem;
+  border-radius: $radius-card;
   border: 1px solid $border-color;
-  padding: $spacing-lg;
+  padding: 32px;
   transition: all 0.3s ease;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
 
   &:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    transform: translateY(-2px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+    transform: translateY(-4px);
   }
 
   &.card-elevated {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
   }
 
   &.card-flat {
@@ -383,7 +392,7 @@ label {
   display: inline-flex;
   align-items: center;
   gap: $spacing-xs;
-  padding: $spacing-xs $spacing-md;
+  padding: 8px 16px;
   border-radius: 9999px;
   font-size: 0.75rem;
   font-weight: 600;
@@ -391,13 +400,13 @@ label {
   letter-spacing: 0.5px;
 
   &.badge-primary {
-    background-color: rgba(14, 165, 233, 0.1);
+    background-color: rgba(0, 113, 61, 0.1);
     color: $primary-dark;
   }
 
   &.badge-success {
-    background-color: rgba(16, 185, 129, 0.1);
-    color: #059669;
+    background-color: rgba(0, 113, 61, 0.1);
+    color: $primary-dark;
   }
 
   &.badge-warning {
@@ -411,8 +420,13 @@ label {
   }
 
   &.badge-info {
-    background-color: rgba(59, 130, 246, 0.1);
-    color: #1e40af;
+    background-color: rgba(0, 113, 61, 0.1);
+    color: $primary-dark;
+  }
+
+  &.badge-accent {
+    background-color: rgba(181, 211, 51, 0.15);
+    color: #7a9900;
   }
 }
 
@@ -459,13 +473,13 @@ tbody tr {
 }
 
 // ============================================================================
-// SIDEBAR NAVIGATION
+// SIDEBAR NAVIGATION - NBS CORPORATE GREEN
 // ============================================================================
 .sidebar {
   width: 280px;
-  background: linear-gradient(180deg, $sidebar-bg 0%, darken($sidebar-bg, 5%) 100%);
+  background: linear-gradient(180deg, $primary-color 0%, darken($primary-color, 3%) 100%);
   color: white;
-  padding: $spacing-xl $spacing-lg;
+  padding: 20px 24px;
   height: 100vh;
   overflow-y: auto;
   position: fixed;
@@ -480,37 +494,62 @@ tbody tr {
   &.collapsed {
     width: 80px;
 
-    .sidebar-title, .nav-text {
+    .sidebar-title, .nav-text, .nbs-text {
       display: none;
     }
 
     .nav-item {
       justify-content: center;
-      padding: $spacing-md;
+      padding: 16px;
+    }
+
+    .sidebar-header {
+      gap: 0;
+      justify-content: center;
     }
   }
 
   .sidebar-header {
     display: flex;
     align-items: center;
-    gap: $spacing-md;
-    margin-bottom: $spacing-2xl;
-    padding-bottom: $spacing-lg;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    gap: 16px;
+    margin-bottom: 32px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    flex-wrap: wrap;
 
-    .logo {
-      font-size: 1.5rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, $primary-light 0%, $primary-color 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+    .logo-img {
+      width: 48px;
+      height: 48px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: bold;
+      color: $accent-color;
     }
 
-    .sidebar-title {
-      font-size: 0.875rem;
-      color: $text-light;
-      opacity: 0.7;
+    .sidebar-branding {
+      flex: 1;
+
+      .nbs-text {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: white;
+        letter-spacing: 2px;
+        margin: 0;
+      }
+
+      .sidebar-title {
+        font-size: 0.75rem;
+        color: $accent-color;
+        opacity: 0.9;
+        margin: 0;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
     }
   }
 
@@ -520,24 +559,27 @@ tbody tr {
     .nav-item {
       display: flex;
       align-items: center;
-      gap: $spacing-md;
-      padding: $spacing-md $spacing-lg;
-      margin-bottom: $spacing-sm;
-      border-radius: 0.5rem;
+      gap: 16px;
+      padding: 14px 16px;
+      margin-bottom: 8px;
+      border-radius: 8px;
       cursor: pointer;
       transition: all 0.2s ease;
       color: rgba(255, 255, 255, 0.7);
       font-weight: 500;
+      font-size: 0.95rem;
+      border-left: 4px solid transparent;
 
       &:hover {
-        background-color: rgba(255, 255, 255, 0.1);
+        background-color: rgba(255, 255, 255, 0.08);
         color: white;
       }
 
       &.active {
-        background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
+        background-color: rgba(181, 211, 51, 0.15);
         color: white;
-        box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+        border-left-color: $accent-color;
+        box-shadow: inset -4px 0 0 $accent-color;
       }
 
       i {
@@ -553,13 +595,15 @@ tbody tr {
 
   .sidebar-footer {
     margin-top: auto;
-    padding-top: $spacing-lg;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
   }
 }
 
 // ============================================================================
-// MAIN CONTENT AREA
+// MAIN CONTENT AREA - MODERN LAYOUT WITH INCREASED PADDING
 // ============================================================================
 .main-layout {
   display: flex;
@@ -571,7 +615,7 @@ tbody tr {
   flex: 1;
   margin-left: 280px;
   overflow-y: auto;
-  padding: $spacing-xl;
+  padding: 32px;
   transition: margin-left 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   will-change: margin-left;
 
@@ -581,7 +625,7 @@ tbody tr {
 
   @media (max-width: $tablet) {
     margin-left: 0;
-    padding: $spacing-lg $spacing-md;
+    padding: 20px;
   }
 }
 
