@@ -272,6 +272,18 @@ export class EclComponent implements OnInit, OnDestroy {
     return lines.join('\n');
   }
 
+  private downloadFile(content: string, filename: string): void {
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+  }
+
   downloadHTMLReport(html: string, filename: string): void {
     const blob = new Blob([html], { type: 'text/html' });
     const url = window.URL.createObjectURL(blob);
