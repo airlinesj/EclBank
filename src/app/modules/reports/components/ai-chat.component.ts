@@ -69,18 +69,20 @@ export class AiChatComponent implements OnInit, AfterViewChecked, OnDestroy {
     if (!this.userMessage.trim()) return;
 
     const message = this.userMessage.trim();
+    console.log('[AI Chat Component] Sending message:', message);
     this.userMessage = '';
     this.isLoading = true;
     this.loadingStartTime = Date.now();
     this.elapsedSeconds = 0;
 
     this.geminiService.sendMessage(message).subscribe(
-      () => {
+      (response) => {
+        console.log('[AI Chat Component] Got response:', response);
         this.isLoading = false;
         this.elapsedSeconds = 0;
       },
       error => {
-        console.error('Error sending message:', error);
+        console.error('[AI Chat Component] Error sending message:', error);
         this.isLoading = false;
         this.elapsedSeconds = 0;
         // Add error message to chat

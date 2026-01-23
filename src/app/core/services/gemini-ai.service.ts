@@ -45,6 +45,9 @@ export class GeminiAiService {
   }
 
   sendMessage(userMessage: string): Observable<string> {
+    console.log('[Hilda] User message:', userMessage);
+    console.log('[Hilda] API Key configured:', !!this.apiKey && this.apiKey.length > 0);
+    
     // Add user message to history
     const userMsg: ChatMessage = {
       role: 'user',
@@ -53,12 +56,7 @@ export class GeminiAiService {
     };
     this.chatHistory.push(userMsg);
     this.chatHistorySubject.next([...this.chatHistory]);
-
-    // Check if API key is configured (detect placeholder)
-    if (!this.apiKey || this.apiKey.includes('Replace') || this.apiKey === 'AIzaSyD0O8vwwP1W_-K6Z-xZ8pQ3vQ0pQ0pQ0pQ') {
-      // Use fallback immediately if no valid API key
-      return this.useFallbackResponse(userMessage);
-    }
+    console.log('[Hilda] Chat history updated, total messages:', this.chatHistory.length);
 
     // Create system context for financial analysis
     const systemContext = this.buildSystemContext();
@@ -95,8 +93,17 @@ Please provide a comprehensive response that includes:
       }
     }).pipe(
       timeout(3000), // 3 second timeout for fast response
+      tap(response => {
+        console.log('[Hilda] API response received successfully');
+      }),
       map(response => {
+        console.log('[Hilda] API response received:', response);
+        if (!response || !response.candidates || !response.candidates[0]) {
+          console.error('[Hilda] Invalid response structure:', response);
+          throw new Error('Invalid API response structure');
+        }
         const assistantMessage = response.candidates[0].content.parts[0].text;
+        console.log('[Hilda] Extracted message, length:', assistantMessage.length);
         const assistantMsg: ChatMessage = {
           role: 'assistant',
           content: assistantMessage,
@@ -104,13 +111,14 @@ Please provide a comprehensive response that includes:
         };
         this.chatHistory.push(assistantMsg);
         this.chatHistorySubject.next([...this.chatHistory]);
+        console.log('[Hilda] Response added to history and emitted');
         return assistantMessage;
       }),
       catchError(error => {
-        console.error('Error calling Gemini API:', error);
-        // If timeout, show apology message then fallback
+        console.error('[Hilda] Error occurred:', error);
         const errorMessage = error?.message || '';
         if (errorMessage.includes('Timeout') || error?.name === 'TimeoutError') {
+          console.log('[Hilda] Timeout detected, showing apology');
           const apologyMsg: ChatMessage = {
             role: 'assistant',
             content: '⏱️ I apologize, I\'m taking longer than usual to process your request. Let me provide you with a quick analysis based on our financial database...',
@@ -119,6 +127,7 @@ Please provide a comprehensive response that includes:
           this.chatHistory.push(apologyMsg);
           this.chatHistorySubject.next([...this.chatHistory]);
         }
+        console.log('[Hilda] Triggering fallback response');
         // Fallback response when API is not configured or request fails
         return this.useFallbackResponse(userMessage);
       })
@@ -126,7 +135,9 @@ Please provide a comprehensive response that includes:
   }
 
   private useFallbackResponse(userMessage: string): Observable<string> {
+    console.log('[Hilda] Generating fallback response for:', userMessage);
     const fallbackResponse = this.generateFallbackResponse(userMessage);
+    console.log('[Hilda] Fallback response generated, length:', fallbackResponse.length);
     const assistantMsg: ChatMessage = {
       role: 'assistant',
       content: fallbackResponse,
@@ -134,6 +145,7 @@ Please provide a comprehensive response that includes:
     };
     this.chatHistory.push(assistantMsg);
     this.chatHistorySubject.next([...this.chatHistory]);
+    console.log('[Hilda] Fallback response added to history');
     return of(fallbackResponse);
   }
 
