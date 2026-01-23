@@ -65,6 +65,13 @@ export class AiChatComponent implements OnInit, AfterViewChecked {
       error => {
         console.error('Error sending message:', error);
         this.isLoading = false;
+        // Add error message to chat
+        const errorMsg: ChatMessage = {
+          role: 'assistant',
+          content: 'Sorry, there was an error processing your request. Please try again.',
+          timestamp: new Date()
+        };
+        this.messages.push(errorMsg);
       }
     );
   }

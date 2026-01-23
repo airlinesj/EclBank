@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, timeout } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { environment } from '../../../environments/environment';
@@ -54,6 +54,12 @@ export class GeminiAiService {
     this.chatHistory.push(userMsg);
     this.chatHistorySubject.next([...this.chatHistory]);
 
+    // Check if API key is configured (detect placeholder)
+    if (!this.apiKey || this.apiKey.includes('Replace') || this.apiKey === 'AIzaSyD0O8vwwP1W_-K6Z-xZ8pQ3vQ0pQ0pQ0pQ') {
+      // Use fallback immediately if no valid API key
+      return this.useFallbackResponse(userMessage);
+    }
+
     // Create system context for financial analysis
     const systemContext = this.buildSystemContext();
     const conversationContext = this.buildConversationContext();
@@ -88,6 +94,7 @@ Please provide a comprehensive response that includes:
         key: this.apiKey
       }
     }).pipe(
+      timeout(10000), // 10 second timeout to prevent hanging
       map(response => {
         const assistantMessage = response.candidates[0].content.parts[0].text;
         const assistantMsg: ChatMessage = {
@@ -101,18 +108,22 @@ Please provide a comprehensive response that includes:
       }),
       catchError(error => {
         console.error('Error calling Gemini API:', error);
-        // Fallback response when API is not configured
-        const fallbackResponse = this.generateFallbackResponse(userMessage);
-        const assistantMsg: ChatMessage = {
-          role: 'assistant',
-          content: fallbackResponse,
-          timestamp: new Date()
-        };
-        this.chatHistory.push(assistantMsg);
-        this.chatHistorySubject.next([...this.chatHistory]);
-        return of(fallbackResponse);
+        // Fallback response when API is not configured or request fails
+        return this.useFallbackResponse(userMessage);
       })
     );
+  }
+
+  private useFallbackResponse(userMessage: string): Observable<string> {
+    const fallbackResponse = this.generateFallbackResponse(userMessage);
+    const assistantMsg: ChatMessage = {
+      role: 'assistant',
+      content: fallbackResponse,
+      timestamp: new Date()
+    };
+    this.chatHistory.push(assistantMsg);
+    this.chatHistorySubject.next([...this.chatHistory]);
+    return of(fallbackResponse);
   }
 
   private buildSystemContext(): string {
