@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject, timeout, timer } from 'rxjs';
-import { map, catchError, switchMap } from 'rxjs/operators';
+import { map, catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
@@ -106,16 +106,11 @@ Please provide a comprehensive response that includes:
         this.chatHistorySubject.next([...this.chatHistory]);
         return assistantMessage;
       }),
-      switchMap(response => {
-        // Add a 5-second delay check to show apology if needed
-        return timer(5000).pipe(
-          map(() => response)
-        );
-      }),
       catchError(error => {
         console.error('Error calling Gemini API:', error);
         // If timeout, show apology message then fallback
-        if (error.name === 'TimeoutError') {
+        const errorMessage = error?.message || '';
+        if (errorMessage.includes('Timeout') || error?.name === 'TimeoutError') {
           const apologyMsg: ChatMessage = {
             role: 'assistant',
             content: '⏱️ I apologize, I\'m taking longer than usual to process your request. Let me provide you with a quick analysis based on our financial database...',
