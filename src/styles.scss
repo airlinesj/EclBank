@@ -473,7 +473,7 @@ tbody tr {
 }
 
 // ============================================================================
-// SIDEBAR NAVIGATION - NBS CORPORATE GREEN
+// SIDEBAR NAVIGATION - NBS CORPORATE GREEN (OPTIMIZED FOR RESPONSIVENESS)
 // ============================================================================
 .sidebar {
   width: 280px;
@@ -487,9 +487,11 @@ tbody tr {
   top: 0;
   z-index: 1000;
   box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
   will-change: transform;
   -webkit-font-smoothing: antialiased;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
 
   &.collapsed {
     width: 80px;
@@ -564,11 +566,14 @@ tbody tr {
       margin-bottom: 8px;
       border-radius: 8px;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: background-color 0.08s linear, color 0.08s linear, border-color 0.08s linear;
+      will-change: background-color, color;
       color: rgba(255, 255, 255, 0.7);
       font-weight: 500;
       font-size: 0.95rem;
       border-left: 4px solid transparent;
+      -webkit-user-select: none;
+      user-select: none;
 
       &:hover {
         background-color: rgba(255, 255, 255, 0.08);
@@ -616,8 +621,10 @@ tbody tr {
   margin-left: 280px;
   overflow-y: auto;
   padding: 32px;
-  transition: margin-left 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: margin-left 0.1s cubic-bezier(0.4, 0, 0.2, 1);
   will-change: margin-left;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
 
   &.expanded {
     margin-left: 80px;

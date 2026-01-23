@@ -1,4 +1,4 @@
-<div class="main-layout" [class.sidebar-open]="sidebarOpen">
+<div class="main-layout" [class.sidebar-open]="sidebarOpen" *ngIf="!isLoginPage">
   <!-- Sidebar Backdrop (Mobile) -->
   <div class="sidebar-backdrop" *ngIf="sidebarOpen" (click)="closeSidebar()"></div>
 
@@ -41,3 +41,6 @@
     <router-outlet></router-outlet>
   </div>
 </div>
+
+<!-- Login Page (no sidebar) -->
+<router-outlet *ngIf="isLoginPage"></router-outlet>

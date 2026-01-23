@@ -1,0 +1,103 @@
+<div class="login-container">
+  <div class="login-wrapper">
+    <div class="login-card">
+      <!-- Logo & Branding -->
+      <div class="login-header">
+        <div class="nbs-logo">
+          <span class="material-symbols-outlined">account_balance</span>
+        </div>
+        <h1 class="nbs-title">NBS BANK</h1>
+        <p class="nbs-subtitle">Banking ECL System</p>
+      </div>
+
+      <!-- Login Form -->
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+        <!-- Error Alert -->
+        <div *ngIf="error" class="alert alert-danger">
+          <span class="material-symbols-outlined">error</span>
+          {{ error }}
+        </div>
+
+        <!-- Email Field -->
+        <div class="form-group">
+          <label for="email" class="form-label">Email Address</label>
+          <input
+            type="email"
+            id="email"
+            formControlName="email"
+            class="form-control"
+            [class.is-invalid]="submitted && f['email'].errors"
+            placeholder="your.email@nbs.co.zw"
+            autocomplete="email"
+          />
+          <div *ngIf="submitted && f['email'].errors" class="form-error">
+            <span *ngIf="f['email'].errors['required']">Email is required</span>
+            <span *ngIf="f['email'].errors['email']">Please enter a valid email</span>
+          </div>
+        </div>
+
+        <!-- Password Field -->
+        <div class="form-group">
+          <label for="password" class="form-label">Password</label>
+          <input
+            type="password"
+            id="password"
+            formControlName="password"
+            class="form-control"
+            [class.is-invalid]="submitted && f['password'].errors"
+            placeholder="Enter your password"
+            autocomplete="current-password"
+          />
+          <div *ngIf="submitted && f['password'].errors" class="form-error">
+            <span *ngIf="f['password'].errors['required']">Password is required</span>
+            <span *ngIf="f['password'].errors['minlength']">Password must be at least 6 characters</span>
+          </div>
+        </div>
+
+        <!-- Remember Me Checkbox -->
+        <div class="form-group checkbox-group">
+          <label class="checkbox-label">
+            <input
+              type="checkbox"
+              formControlName="rememberMe"
+              class="checkbox-input"
+            />
+            <span class="checkbox-text">Remember me on this device</span>
+          </label>
+        </div>
+
+        <!-- Submit Button -->
+        <button
+          type="submit"
+          class="btn-login"
+          [disabled]="loading"
+        >
+          <span *ngIf="!loading" class="material-symbols-outlined">login</span>
+          <span *ngIf="loading" class="spinner-small"></span>
+          {{ loading ? 'Signing in...' : 'Sign In' }}
+        </button>
+      </form>
+
+      <!-- Footer Links -->
+      <div class="login-footer">
+        <p class="footer-text">
+          <a href="#forgot-password" class="link">Forgot password?</a>
+          <span class="divider">•</span>
+          <a href="#help" class="link">Need help?</a>
+        </p>
+      </div>
+
+      <!-- Demo Credentials -->
+      <div class="demo-info">
+        <p class="demo-text">Demo Credentials:</p>
+        <p class="demo-details">
+          <strong>Email:</strong> demo@nbs.co.zw<br>
+          <strong>Password:</strong> demo123
+        </p>
+      </div>
+    </div>
+
+    <!-- Background Elements -->
+    <div class="background-gradient"></div>
+  </div>
+</div>
