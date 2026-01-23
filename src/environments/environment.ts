@@ -3,5 +3,5 @@
 
 export const environment = {
   production: false,
-  geminiApiKey: 'AIzaSyD0O8vwwP1W_-K6Z-xZ8pQ3vQ0pQ0pQ0pQ' // Replace with your actual Gemini API key
+  geminiApiKey: 'AIzaSyBmZ7UKSoy5jMK-Zdf1xC8tDnYA32_y1zg'
 };
