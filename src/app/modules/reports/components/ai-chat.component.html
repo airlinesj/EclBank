@@ -75,7 +75,10 @@
         <span></span>
         <span></span>
       </div>
-      <p>Hilda is analyzing...</p>
+      <div class="loading-text">
+        <p>Hilda is analyzing...</p>
+        <p class="elapsed-time" [ngClass]="{'delayed': elapsedSeconds >= 5}">{{ elapsedSeconds }}s</p>
+      </div>
     </div>
   </div>
 

@@ -1,7 +1,9 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewChecked, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { GeminiAiService, ChatMessage } from '@core/services/gemini-ai.service';
+import { Subject, interval } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-ai-chat',
@@ -10,7 +12,7 @@ import { GeminiAiService, ChatMessage } from '@core/services/gemini-ai.service';
   templateUrl: './ai-chat.component.html',
   styleUrl: './ai-chat.component.scss'
 })
-export class AiChatComponent implements OnInit, AfterViewChecked {
+export class AiChatComponent implements OnInit, AfterViewChecked, OnDestroy {
   @ViewChild('chatMessages') chatMessagesRef!: ElementRef;
 
   messages: ChatMessage[] = [];
@@ -18,6 +20,9 @@ export class AiChatComponent implements OnInit, AfterViewChecked {
   isLoading: boolean = false;
   showDownloadMenu: boolean = false;
   shouldScroll: boolean = false;
+  elapsedSeconds: number = 0;
+  loadingStartTime: number = 0;
+  private destroy$ = new Subject<void>();
 
   suggestedQuestions = [
     'What are the current ECL market trends?',
@@ -35,6 +40,15 @@ export class AiChatComponent implements OnInit, AfterViewChecked {
       this.messages = messages;
       this.shouldScroll = true;
     });
+
+    // Track elapsed time while loading
+    interval(100)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        if (this.isLoading && this.loadingStartTime > 0) {
+          this.elapsedSeconds = Math.round((Date.now() - this.loadingStartTime) / 1000);
+        }
+      });
   }
 
   ngAfterViewChecked(): void {
@@ -57,14 +71,18 @@ export class AiChatComponent implements OnInit, AfterViewChecked {
     const message = this.userMessage.trim();
     this.userMessage = '';
     this.isLoading = true;
+    this.loadingStartTime = Date.now();
+    this.elapsedSeconds = 0;
 
     this.geminiService.sendMessage(message).subscribe(
       () => {
         this.isLoading = false;
+        this.elapsedSeconds = 0;
       },
       error => {
         console.error('Error sending message:', error);
         this.isLoading = false;
+        this.elapsedSeconds = 0;
         // Add error message to chat
         const errorMsg: ChatMessage = {
           role: 'assistant',
@@ -129,5 +147,10 @@ export class AiChatComponent implements OnInit, AfterViewChecked {
 
   formatMessage(content: string): string {
     return content;
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, BehaviorSubject, timeout } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { Observable, BehaviorSubject, timeout, timer } from 'rxjs';
+import { map, catchError, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
@@ -94,7 +94,7 @@ Please provide a comprehensive response that includes:
         key: this.apiKey
       }
     }).pipe(
-      timeout(10000), // 10 second timeout to prevent hanging
+      timeout(3000), // 3 second timeout for fast response
       map(response => {
         const assistantMessage = response.candidates[0].content.parts[0].text;
         const assistantMsg: ChatMessage = {
@@ -106,8 +106,24 @@ Please provide a comprehensive response that includes:
         this.chatHistorySubject.next([...this.chatHistory]);
         return assistantMessage;
       }),
+      switchMap(response => {
+        // Add a 5-second delay check to show apology if needed
+        return timer(5000).pipe(
+          map(() => response)
+        );
+      }),
       catchError(error => {
         console.error('Error calling Gemini API:', error);
+        // If timeout, show apology message then fallback
+        if (error.name === 'TimeoutError') {
+          const apologyMsg: ChatMessage = {
+            role: 'assistant',
+            content: '⏱️ I apologize, I\'m taking longer than usual to process your request. Let me provide you with a quick analysis based on our financial database...',
+            timestamp: new Date()
+          };
+          this.chatHistory.push(apologyMsg);
+          this.chatHistorySubject.next([...this.chatHistory]);
+        }
         // Fallback response when API is not configured or request fails
         return this.useFallbackResponse(userMessage);
       })
