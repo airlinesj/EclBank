@@ -27,7 +27,7 @@
             formControlName="email"
             class="form-control"
             [class.is-invalid]="submitted && f['email'].errors"
-            placeholder="your.email@nbs.co.zw"
+            placeholder="your.email&#64;nbs.co.zw"
             autocomplete="email"
           />
           <div *ngIf="submitted && f['email'].errors" class="form-error">
@@ -91,7 +91,7 @@
       <div class="demo-info">
         <p class="demo-text">Demo Credentials:</p>
         <p class="demo-details">
-          <strong>Email:</strong> demo@nbs.co.zw<br>
+          <strong>Email:</strong> demo&#64;nbs.co.zw<br>
           <strong>Password:</strong> demo123
         </p>
       </div>
