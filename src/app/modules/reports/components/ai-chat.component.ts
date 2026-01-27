@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewChecked, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewChecked, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { GeminiAiService, ChatMessage } from '@core/services/gemini-ai.service';
@@ -10,7 +10,8 @@ import { takeUntil } from 'rxjs/operators';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './ai-chat.component.html',
-  styleUrl: './ai-chat.component.scss'
+  styleUrl: './ai-chat.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AiChatComponent implements OnInit, AfterViewChecked, OnDestroy {
   @ViewChild('chatMessages') chatMessagesRef!: ElementRef;
@@ -33,12 +34,19 @@ export class AiChatComponent implements OnInit, AfterViewChecked, OnDestroy {
     'What is the expected default rate for 2026?'
   ];
 
-  constructor(private geminiService: GeminiAiService) {}
+  constructor(
+    private geminiService: GeminiAiService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     this.geminiService.chatHistory$.subscribe(messages => {
+      console.log('[AI Chat Component] Received messages update:', messages.length);
       this.messages = messages;
       this.shouldScroll = true;
+      // Manually trigger change detection for OnPush strategy
+      this.cdr.markForCheck();
+      console.log('[AI Chat Component] Change detection triggered');
     });
 
     // Track elapsed time while loading
@@ -75,11 +83,17 @@ export class AiChatComponent implements OnInit, AfterViewChecked, OnDestroy {
     this.loadingStartTime = Date.now();
     this.elapsedSeconds = 0;
 
+    // Trigger change detection to update UI
+    this.cdr.markForCheck();
+
     this.geminiService.sendMessage(message).subscribe(
       (response) => {
         console.log('[AI Chat Component] Got response:', response);
         this.isLoading = false;
         this.elapsedSeconds = 0;
+        // Trigger change detection after response
+        this.cdr.markForCheck();
+        this.cdr.detectChanges();
       },
       error => {
         console.error('[AI Chat Component] Error sending message:', error);
@@ -92,6 +106,8 @@ export class AiChatComponent implements OnInit, AfterViewChecked, OnDestroy {
           timestamp: new Date()
         };
         this.messages.push(errorMsg);
+        // Trigger change detection after error
+        this.cdr.markForCheck();
       }
     );
   }
