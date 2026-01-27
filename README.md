@@ -129,6 +129,28 @@ npm build
 
 The application will be available at `http://localhost:4200`
 
+### CORS Proxy Configuration
+
+For the AI Chat feature (Google Gemini API integration), a proxy configuration is set up to avoid CORS issues during development.
+
+**Files created:**
+- `proxy.conf.json` - Angular proxy configuration
+- Updated `angular.json` to use the proxy
+
+**How it works:**
+- API requests to `/api/gemini` are proxied to `https://generativelanguage.googleapis.com`
+- This bypasses browser CORS restrictions during development
+
+**Start the server with proxy:**
+```bash
+npm start
+```
+
+**Note for production:** The proxy only works in development. For production deployment, you need to either:
+1. Use a backend server to proxy the requests
+2. Configure CORS headers on the Google API endpoint (not possible for client-side apps)
+3. Use a cloud function/serverless proxy
+
 ## Usage Guide
 
 ### 1. Dashboard
@@ -184,7 +206,7 @@ To integrate with actual banking system:
 
 1. Update `CoreBankingService` (`src/app/core/services/core-banking.service.ts`)
 2. Configure API endpoints:
-   ```typescript
+   ```typescript8
    private bankingApiUrl = 'https://your-banking-api.com/api';
    ```
 3. Implement actual API calls instead of mock data methods
