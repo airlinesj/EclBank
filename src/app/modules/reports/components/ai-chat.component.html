@@ -6,68 +6,78 @@
     </div>
     <div class="header-actions">
       <button (click)="toggleDownloadMenu()" class="btn-download" title="Download chat">
-        ⬇ Download
+        <span class="material-symbols-outlined">download</span>
+        Download
       </button>
       <div *ngIf="showDownloadMenu" class="download-menu">
         <button (click)="downloadAsJSON()" class="download-option">
-          📄 JSON
+          <span class="material-symbols-outlined">data_object</span>
+          JSON
         </button>
         <button (click)="downloadAsCSV()" class="download-option">
-          📊 CSV
+          <span class="material-symbols-outlined">table_view</span>
+          CSV
         </button>
         <button (click)="downloadAsHTML()" class="download-option">
-          🌐 HTML
+          <span class="material-symbols-outlined">code</span>
+          HTML
+        </button>
+        <button (click)="downloadAsPDF()" class="download-option">
+          <span class="material-symbols-outlined">picture_as_pdf</span>
+          PDF
         </button>
       </div>
       <button (click)="clearChat()" class="btn-clear" title="Clear chat">
-        🗑 Clear
+        <span class="material-symbols-outlined">delete</span>
+        Clear
       </button>
     </div>
   </div>
 
   <div class="chat-messages" #chatMessages>
-    <div *ngIf="messages.length === 0" class="welcome-section">
-      <div class="welcome-content">
-        <h2>Welcome to Hilda</h2>
-        <p>Your AI Financial Assistant for ECL analysis, market trends, and financial forecasting</p>
-        
-        <div class="capabilities">
-          <h3>Capabilities:</h3>
-          <ul>
-            <li>📊 ECL Analysis & Loss Predictions</li>
-            <li>📈 Interest Rate Trends & Forecasts</li>
-            <li>💹 Stock Market Insights & Analysis</li>
-            <li>🌍 Global Financial Data & World Bank Info</li>
-            <li>📉 Risk Assessment & Default Probability</li>
-            <li>🔮 12-Month Financial Forecasts</li>
-          </ul>
-        </div>
+    <ng-container *ngIf="messages$ | async as chatMessagesList">
+      <div *ngIf="chatMessagesList.length === 0" class="welcome-section">
+        <div class="welcome-content">
+          <h2>Welcome to Hilda</h2>
+          <p>Your AI Financial Assistant for ECL analysis, market trends, and financial forecasting</p>
+          
+          <div class="capabilities">
+            <h3>Capabilities:</h3>
+            <ul>
+              <li><span class="material-symbols-outlined">insights</span> ECL Analysis & Loss Predictions</li>
+              <li><span class="material-symbols-outlined">timeline</span> Interest Rate Trends & Forecasts</li>
+              <li><span class="material-symbols-outlined">show_chart</span> Stock Market Insights & Analysis</li>
+              <li><span class="material-symbols-outlined">public</span> Global Financial Data & World Bank Info</li>
+              <li><span class="material-symbols-outlined">analytics</span> Risk Assessment & Default Probability</li>
+              <li><span class="material-symbols-outlined">query_stats</span> 12-Month Financial Forecasts</li>
+            </ul>
+          </div>
 
-        <h3>Try asking:</h3>
-        <div class="suggested-questions">
-          <button *ngFor="let question of suggestedQuestions" 
-                  (click)="sendSuggestedQuestion(question)"
-                  class="suggestion-btn">
-            {{ question }}
-          </button>
+          <h3>Try asking:</h3>
+          <div class="suggested-questions">
+            <button *ngFor="let question of suggestedQuestions" 
+                    (click)="sendSuggestedQuestion(question)"
+                    class="suggestion-btn">
+              {{ question }}
+            </button>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div *ngFor="let message of messages" class="chat-message" [ngClass]="message.role">
-      <div class="message-avatar">
-        {{ message.role === 'user' ? '👤' : '🤖' }}
-      </div>
-      <div class="message-content">
-        <div class="message-header">
-          <span class="sender-name">{{ message.role === 'user' ? 'You' : 'Hilda' }}</span>
-          <span class="message-time">{{ message.timestamp | date: 'short' }}</span>
+      <div *ngFor="let message of chatMessagesList" class="chat-message" [ngClass]="message.role">
+        <div class="message-avatar">
+          <span *ngIf="message.role === 'user'" class="material-symbols-outlined">person</span>
+          <span *ngIf="message.role !== 'user'" class="material-symbols-outlined">smart_toy</span>
         </div>
-        <div class="message-text">
-          {{ message.content }}
+        <div class="message-content">
+          <div class="message-header">
+            <span class="sender-name">{{ message.role === 'user' ? 'You' : 'Hilda' }}</span>
+            <span class="message-time">{{ message.timestamp | date: 'short' }}</span>
+          </div>
+          <div class="message-text" [innerHTML]="formatMessage(message.content)"></div>
         </div>
       </div>
-    </div>
+    </ng-container>
 
     <div *ngIf="isLoading" class="loading-indicator">
       <div class="typing-dots">
@@ -95,11 +105,15 @@
         (click)="sendMessage()"
         [disabled]="isLoading || !userMessage.trim()"
         class="btn-send">
-        {{ isLoading ? '⏳' : '📤' }} Send
+        <span class="material-symbols-outlined">{{ isLoading ? 'progress_activity' : 'send' }}</span>
+        Send
       </button>
     </div>
     <div class="input-hints">
-      <span>💡 Press Shift+Enter for new line, Enter to send</span>
+      <span>
+        <span class="material-symbols-outlined">lightbulb</span>
+        Press Shift+Enter for new line, Enter to send
+      </span>
     </div>
   </div>
 </div>

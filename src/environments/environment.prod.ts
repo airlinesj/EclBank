@@ -1,4 +1,5 @@
 export const environment = {
   production: true,
-  geminiApiKey: 'AIzaSyBmZ7UKSoy5jMK-Zdf1xC8tDnYA32_y1zg'
+  geminiApiKey: 'YOUR_GEMINI_API_KEY',
+  useMockApi: false
 };

@@ -45,6 +45,13 @@
         cursor: pointer;
         transition: all 0.2s ease;
         font-size: 0.875rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+
+        .material-symbols-outlined {
+          font-size: 18px;
+        }
 
         &:hover {
           background: rgba(255, 255, 255, 0.3);
@@ -80,6 +87,12 @@
           text-align: left;
           transition: background-color 0.2s ease;
           font-size: 0.875rem;
+          gap: 0.5rem;
+
+          .material-symbols-outlined {
+            font-size: 18px;
+            color: #475569;
+          }
 
           &:hover {
             background-color: #f0f9ff;
@@ -155,10 +168,9 @@
               align-items: center;
               gap: 0.75rem;
 
-              &::before {
-                content: '✓';
+              .material-symbols-outlined {
+                font-size: 18px;
                 color: #10b981;
-                font-weight: bold;
               }
             }
           }
@@ -260,6 +272,10 @@
         display: flex;
         align-items: center;
         justify-content: center;
+
+        .material-symbols-outlined {
+          font-size: 20px;
+        }
       }
 
       .message-content {
@@ -420,6 +436,13 @@
         font-weight: 500;
         transition: all 0.2s ease;
         white-space: nowrap;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+
+        .material-symbols-outlined {
+          font-size: 18px;
+        }
 
         &:hover:not(:disabled) {
           transform: translateY(-2px);
@@ -446,6 +469,10 @@
         display: flex;
         align-items: center;
         gap: 0.25rem;
+      }
+
+      .material-symbols-outlined {
+        font-size: 16px;
       }
     }
   }
@@ -511,3 +538,6 @@
     }
   }
 }
+
+
+

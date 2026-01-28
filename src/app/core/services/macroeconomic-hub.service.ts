@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
 import { catchError, map, timeout } from 'rxjs/operators';
 import { MacroVariable, MacroForecast, MacroEconomicHubResponse, ForecastPoint } from '../interfaces/macro.interface';
+import { environment } from '../../../environments/environment';
 
 /**
  * Macroeconomic Hub Service
@@ -20,6 +21,7 @@ export class MacroeconomicHubService {
   private centralBankApiUrl = '/api/centralbank';
 
   private requestTimeout = 30000;
+  private useMockApi = environment.useMockApi;
 
   constructor(private http: HttpClient) {}
 
@@ -28,6 +30,10 @@ export class MacroeconomicHubService {
    * TODO: Integrate with actual IMF API
    */
   extractGDPGrowth(country: string): Promise<MacroVariable> {
+    if (this.useMockApi) {
+      return Promise.resolve(this.getMockGDPGrowth(country));
+    }
+
     return this.http
       .get<MacroVariable>(`${this.imfApiUrl}/gdp-growth?country=${country}`)
       .pipe(
@@ -43,6 +49,10 @@ export class MacroeconomicHubService {
    * TODO: Integrate with actual World Bank API
    */
   extractInflationRate(country: string): Promise<MacroVariable> {
+    if (this.useMockApi) {
+      return Promise.resolve(this.getMockInflationRate(country));
+    }
+
     return this.http
       .get<MacroVariable>(`${this.worldBankApiUrl}/inflation?country=${country}`)
       .pipe(
@@ -58,6 +68,10 @@ export class MacroeconomicHubService {
    * TODO: Integrate with actual data source API
    */
   extractUnemploymentRate(country: string): Promise<MacroVariable> {
+    if (this.useMockApi) {
+      return Promise.resolve(this.getMockUnemploymentRate(country));
+    }
+
     return this.http
       .get<MacroVariable>(`${this.worldBankApiUrl}/unemployment?country=${country}`)
       .pipe(
@@ -73,6 +87,10 @@ export class MacroeconomicHubService {
    * TODO: Integrate with actual Central Bank API
    */
   extractInterestRate(country: string): Promise<MacroVariable> {
+    if (this.useMockApi) {
+      return Promise.resolve(this.getMockInterestRate(country));
+    }
+
     return this.http
       .get<MacroVariable>(`${this.centralBankApiUrl}/interest-rate?country=${country}`)
       .pipe(
@@ -88,6 +106,10 @@ export class MacroeconomicHubService {
    * TODO: Integrate with actual data source API
    */
   extractCreditGrowth(country: string): Promise<MacroVariable> {
+    if (this.useMockApi) {
+      return Promise.resolve(this.getMockCreditGrowth(country));
+    }
+
     return this.http
       .get<MacroVariable>(`${this.centralBankApiUrl}/credit-growth?country=${country}`)
       .pipe(
@@ -103,6 +125,10 @@ export class MacroeconomicHubService {
    * TODO: Integrate with actual data source API
    */
   extractHousePriceIndex(country: string): Promise<MacroVariable> {
+    if (this.useMockApi) {
+      return Promise.resolve(this.getMockHousePriceIndex(country));
+    }
+
     return this.http
       .get<MacroVariable>(`${this.oecdApiUrl}/house-price-index?country=${country}`)
       .pipe(

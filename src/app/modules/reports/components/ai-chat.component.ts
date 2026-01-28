@@ -1,9 +1,10 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewChecked, OnDestroy } from '@angular/core';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { GeminiAiService, ChatMessage } from '@core/services/gemini-ai.service';
-import { Subject, interval } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { Subject, interval, Observable } from 'rxjs';
+import { takeUntil, finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-ai-chat',
@@ -15,7 +16,7 @@ import { takeUntil } from 'rxjs/operators';
 export class AiChatComponent implements OnInit, AfterViewChecked, OnDestroy {
   @ViewChild('chatMessages') chatMessagesRef!: ElementRef;
 
-  messages: ChatMessage[] = [];
+  messages$: Observable<ChatMessage[]>;
   userMessage: string = '';
   isLoading: boolean = false;
   showDownloadMenu: boolean = false;
@@ -33,11 +34,15 @@ export class AiChatComponent implements OnInit, AfterViewChecked, OnDestroy {
     'What is the expected default rate for 2026?'
   ];
 
-  constructor(private geminiService: GeminiAiService) {}
+  constructor(
+    private geminiService: GeminiAiService,
+    private sanitizer: DomSanitizer
+  ) {
+    this.messages$ = this.geminiService.chatHistory$;
+  }
 
   ngOnInit(): void {
-    this.geminiService.chatHistory$.subscribe(messages => {
-      this.messages = messages;
+    this.messages$.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.shouldScroll = true;
     });
 
@@ -75,25 +80,27 @@ export class AiChatComponent implements OnInit, AfterViewChecked, OnDestroy {
     this.loadingStartTime = Date.now();
     this.elapsedSeconds = 0;
 
-    this.geminiService.sendMessage(message).subscribe(
-      (response) => {
-        console.log('[AI Chat Component] Got response:', response);
-        this.isLoading = false;
-        this.elapsedSeconds = 0;
-      },
-      error => {
-        console.error('[AI Chat Component] Error sending message:', error);
-        this.isLoading = false;
-        this.elapsedSeconds = 0;
-        // Add error message to chat
-        const errorMsg: ChatMessage = {
-          role: 'assistant',
-          content: 'Sorry, there was an error processing your request. Please try again.',
-          timestamp: new Date()
-        };
-        this.messages.push(errorMsg);
-      }
-    );
+    this.geminiService
+      .sendMessage(message)
+      .pipe(
+        finalize(() => {
+          this.isLoading = false;
+          this.elapsedSeconds = 0;
+          this.loadingStartTime = 0;
+        })
+      )
+      .subscribe(
+        (response) => {
+          console.log('[AI Chat Component] Got response:', response);
+          // Small delay to ensure state updates after message is added to history
+          setTimeout(() => {
+            this.shouldScroll = true;
+          }, 100);
+        },
+        error => {
+          console.error('[AI Chat Component] Error sending message:', error);
+        }
+      );
   }
 
   sendSuggestedQuestion(question: string): void {
@@ -130,6 +137,11 @@ export class AiChatComponent implements OnInit, AfterViewChecked, OnDestroy {
     this.showDownloadMenu = false;
   }
 
+  downloadAsPDF(): void {
+    this.geminiService.downloadChatAsPDF();
+    this.showDownloadMenu = false;
+  }
+
   private downloadBlob(blob: Blob, filename: string): void {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -147,8 +159,18 @@ export class AiChatComponent implements OnInit, AfterViewChecked, OnDestroy {
     }
   }
 
-  formatMessage(content: string): string {
-    return content;
+  formatMessage(content: string): SafeHtml {
+    const escaped = this.escapeHtml(content);
+    const withBold = escaped.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    const withBreaks = withBold.replace(/\n/g, '<br>');
+    return this.sanitizer.bypassSecurityTrustHtml(withBreaks);
+  }
+
+  private escapeHtml(input: string): string {
+    return input
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
   }
 
   ngOnDestroy(): void {

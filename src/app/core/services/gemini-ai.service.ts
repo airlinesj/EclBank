@@ -46,7 +46,6 @@ export class GeminiAiService {
 
   sendMessage(userMessage: string): Observable<string> {
     console.log('[Hilda] User message:', userMessage);
-    console.log('[Hilda] API Key configured:', !!this.apiKey && this.apiKey.length > 0);
     
     // Add user message to history
     const userMsg: ChatMessage = {
@@ -56,13 +55,49 @@ export class GeminiAiService {
     };
     this.chatHistory.push(userMsg);
     this.chatHistorySubject.next([...this.chatHistory]);
-    console.log('[Hilda] Chat history updated, total messages:', this.chatHistory.length);
 
-    // Use fallback response with simulated delay for better UX
-    // This ensures user gets a response even if API is slow
-    console.log('[Hilda] Using fallback response (API may be slow/unavailable)');
-    return timer(1000).pipe(
-      switchMap(() => this.useFallbackResponse(userMessage))
+    // Check if API key is valid
+    if (!this.apiKey || this.apiKey === 'YOUR_GEMINI_API_KEY' || this.apiKey.length < 10) {
+      console.log('[Hilda] Using fallback response (API Key not configured)');
+      return timer(1000).pipe(
+        switchMap(() => this.useFallbackResponse(userMessage))
+      );
+    }
+
+    // Try to use real API
+    const url = `${this.apiEndpoint}?key=${this.apiKey}`;
+    const body = {
+      contents: [
+        {
+          role: 'user',
+          parts: [{ text: this.buildSystemContext() + '\n\n' + this.buildConversationContext() }]
+        }
+      ],
+      generationConfig: {
+        temperature: 0.7,
+        topK: 40,
+        topP: 0.95,
+        maxOutputTokens: 1024,
+      }
+    };
+
+    return this.http.post<any>(url, body).pipe(
+      timeout(15000),
+      map(response => {
+        const aiResponse = response.candidates[0].content.parts[0].text;
+        const assistantMsg: ChatMessage = {
+          role: 'assistant',
+          content: aiResponse,
+          timestamp: new Date()
+        };
+        this.chatHistory.push(assistantMsg);
+        this.chatHistorySubject.next([...this.chatHistory]);
+        return aiResponse;
+      }),
+      catchError(error => {
+        console.error('[Hilda] API Error:', error);
+        return this.useFallbackResponse(userMessage);
+      })
     );
   }
 
@@ -102,7 +137,12 @@ export class GeminiAiService {
 
   private generateFallbackResponse(userMessage: string): string {
     // Enhanced fallback responses based on user queries
-    const lowerMessage = userMessage.toLowerCase();
+    const lowerMessage = userMessage.toLowerCase().trim();
+
+    // Handle common greetings
+    if (lowerMessage === 'hi' || lowerMessage === 'hello' || lowerMessage === 'hey') {
+      return `Hello! I'm Hilda, your AI Financial Assistant. How can I help you with your ECL analysis or market research today?`;
+    }
 
     if (lowerMessage.includes('ecl') || lowerMessage.includes('expected credit loss')) {
       return `Regarding ECL Analysis:
@@ -240,17 +280,38 @@ Please ask me about any specific financial topic, and I'll provide detailed data
   }
 
   downloadChatAsHTML(): Blob {
-    const htmlContent = `
+    const htmlContent = this.buildChatExportHtml();
+    return new Blob([htmlContent], { type: 'text/html' });
+  }
+
+  downloadChatAsPDF(): void {
+    const htmlContent = this.buildChatExportHtml();
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+      return;
+    }
+    printWindow.document.open();
+    printWindow.document.write(htmlContent);
+    printWindow.document.close();
+    printWindow.focus();
+    setTimeout(() => {
+      printWindow.print();
+      printWindow.close();
+    }, 250);
+  }
+
+  private buildChatExportHtml(): string {
+    return `
 <!DOCTYPE html>
 <html>
 <head>
   <title>Hilda Financial Assistant Chat</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
+    body { font-family: Arial, sans-serif; margin: 20px; color: #0f172a; }
     .message { margin: 10px 0; padding: 10px; border-radius: 5px; }
     .user { background-color: #e3f2fd; text-align: left; }
     .assistant { background-color: #f5f5f5; text-align: left; }
-    .timestamp { font-size: 0.8em; color: #666; }
+    .timestamp { font-size: 0.8em; color: #64748b; }
     h1 { color: #0369a1; }
   </style>
 </head>
@@ -260,13 +321,13 @@ Please ask me about any specific financial topic, and I'll provide detailed data
   ${this.chatHistory
     .map(msg => `
     <div class="message ${msg.role}">
-      <div class="timestamp">${msg.role === 'assistant' ? '🤖 Hilda' : '👤 You'} - ${msg.timestamp.toLocaleString()}</div>
+      <div class="timestamp">${msg.role === 'assistant' ? 'Hilda' : 'You'} - ${msg.timestamp.toLocaleString()}</div>
       <p>${msg.content.replace(/\n/g, '<br>')}</p>
     </div>
     `)
     .join('')}
 </body>
 </html>`;
-    return new Blob([htmlContent], { type: 'text/html' });
   }
 }
+

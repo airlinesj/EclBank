@@ -3,5 +3,6 @@
 
 export const environment = {
   production: false,
-  geminiApiKey: 'AIzaSyBmZ7UKSoy5jMK-Zdf1xC8tDnYA32_y1zg'
+  geminiApiKey: 'YOUR_GEMINI_API_KEY',
+  useMockApi: true
 };

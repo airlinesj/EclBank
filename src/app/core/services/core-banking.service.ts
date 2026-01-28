@@ -3,6 +3,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError, of } from 'rxjs';
 import { catchError, timeout } from 'rxjs/operators';
 import { ICoreBankingSystem, BankingDataExtractionResponse, LoanBalance, Transaction, BorrowerInfo } from '../interfaces/banking.interface';
+import { environment } from '../../../environments/environment';
 
 /**
  * Core Banking Service
@@ -15,6 +16,7 @@ import { ICoreBankingSystem, BankingDataExtractionResponse, LoanBalance, Transac
 export class CoreBankingService implements ICoreBankingSystem {
   private bankingApiUrl = '/api/banking'; // TODO: Configure with actual banking API endpoint
   private requestTimeout = 30000; // 30 seconds
+  private useMockApi = environment.useMockApi;
 
   constructor(private http: HttpClient) {}
 
@@ -23,6 +25,10 @@ export class CoreBankingService implements ICoreBankingSystem {
    * TODO: Replace with actual API integration
    */
   extractLoanBalances(): Promise<LoanBalance[]> {
+    if (this.useMockApi) {
+      return Promise.resolve(this.getMockLoanBalances());
+    }
+
     // Placeholder implementation - replace with actual API call
     return this.http
       .get<LoanBalance[]>(`${this.bankingApiUrl}/loans`)
@@ -42,6 +48,14 @@ export class CoreBankingService implements ICoreBankingSystem {
     loanId?: string,
     dateRange?: { start: Date; end: Date }
   ): Promise<Transaction[]> {
+    if (this.useMockApi) {
+      const transactions = this.getMockTransactions();
+      if (!loanId) {
+        return Promise.resolve(transactions);
+      }
+      return Promise.resolve(transactions.filter(transaction => transaction.loanId === loanId));
+    }
+
     let url = `${this.bankingApiUrl}/transactions`;
     if (loanId) {
       url += `?loanId=${loanId}`;
@@ -63,6 +77,14 @@ export class CoreBankingService implements ICoreBankingSystem {
    * TODO: Replace with actual API integration
    */
   extractBorrowerInfo(borrowerId?: string): Promise<BorrowerInfo[]> {
+    if (this.useMockApi) {
+      const borrowers = this.getMockBorrowers();
+      if (!borrowerId) {
+        return Promise.resolve(borrowers);
+      }
+      return Promise.resolve(borrowers.filter(borrower => borrower.borrowerId === borrowerId));
+    }
+
     let url = `${this.bankingApiUrl}/borrowers`;
     if (borrowerId) {
       url += `?borrowerId=${borrowerId}`;
@@ -82,6 +104,10 @@ export class CoreBankingService implements ICoreBankingSystem {
    * Health check for banking system connection
    */
   healthCheck(): Promise<boolean> {
+    if (this.useMockApi) {
+      return Promise.resolve(true);
+    }
+
     return this.http
       .get<{ status: string }>(`${this.bankingApiUrl}/health`)
       .pipe(

@@ -118,15 +118,21 @@
 
     <!-- Hilda AI Assistant -->
     <div class="card hilda-card" (click)="navigateToHilda()">
-      <div class="card-title">🤖 Hilda AI Assistant</div>
+      <div class="card-title">
+        <span class="material-symbols-outlined">smart_toy</span>
+        Hilda AI Assistant
+      </div>
       <div class="card-content">
         <p class="hilda-description">Get real-time financial analysis and insights on ECL, interest rates, and market trends</p>
         <div class="hilda-features">
-          <span class="feature">📊 ECL Analysis</span>
-          <span class="feature">📈 Rate Forecasts</span>
-          <span class="feature">💹 Market Insights</span>
+          <span class="feature-tag"><span class="material-symbols-outlined">insights</span> ECL Analysis</span>
+          <span class="feature-tag"><span class="material-symbols-outlined">timeline</span> Rate Forecasts</span>
+          <span class="feature-tag"><span class="material-symbols-outlined">show_chart</span> Market Insights</span>
         </div>
-        <button class="btn-hilda">Launch Chat →</button>
+        <button class="btn-hilda">
+          Launch Chat
+          <span class="material-symbols-outlined">arrow_forward</span>
+        </button>
       </div>
     </div>
   </div>
@@ -135,3 +141,5 @@
     <p>Loading...</p>
   </div>
 </div>
+
+
