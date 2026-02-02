@@ -28,14 +28,8 @@ export class MacroeconomicHubService {
    * TODO: Integrate with actual IMF API
    */
   extractGDPGrowth(country: string): Promise<MacroVariable> {
-    return this.http
-      .get<MacroVariable>(`${this.imfApiUrl}/gdp-growth?country=${country}`)
-      .pipe(
-        timeout(this.requestTimeout),
-        catchError(() => of(this.getMockGDPGrowth(country)))
-      )
-      .toPromise()
-      .then(data => data || this.getMockGDPGrowth(country));
+    // Using mock data for development - replace with actual API call when backend is available
+    return Promise.resolve(this.getMockGDPGrowth(country));
   }
 
   /**

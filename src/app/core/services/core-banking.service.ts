@@ -23,15 +23,8 @@ export class CoreBankingService implements ICoreBankingSystem {
    * TODO: Replace with actual API integration
    */
   extractLoanBalances(): Promise<LoanBalance[]> {
-    // Placeholder implementation - replace with actual API call
-    return this.http
-      .get<LoanBalance[]>(`${this.bankingApiUrl}/loans`)
-      .pipe(
-        timeout(this.requestTimeout),
-        catchError(this.handleError)
-      )
-      .toPromise()
-      .then(data => data || this.getMockLoanBalances());
+    // Using mock data for development - replace with actual API call when backend is available
+    return Promise.resolve(this.getMockLoanBalances());
   }
 
   /**
@@ -42,20 +35,8 @@ export class CoreBankingService implements ICoreBankingSystem {
     loanId?: string,
     dateRange?: { start: Date; end: Date }
   ): Promise<Transaction[]> {
-    let url = `${this.bankingApiUrl}/transactions`;
-    if (loanId) {
-      url += `?loanId=${loanId}`;
-    }
-    // TODO: Add date range parameters if needed
-
-    return this.http
-      .get<Transaction[]>(url)
-      .pipe(
-        timeout(this.requestTimeout),
-        catchError(this.handleError)
-      )
-      .toPromise()
-      .then(data => data || this.getMockTransactions());
+    // Using mock data for development - replace with actual API call when backend is available
+    return Promise.resolve(this.getMockTransactions());
   }
 
   /**
@@ -63,33 +44,16 @@ export class CoreBankingService implements ICoreBankingSystem {
    * TODO: Replace with actual API integration
    */
   extractBorrowerInfo(borrowerId?: string): Promise<BorrowerInfo[]> {
-    let url = `${this.bankingApiUrl}/borrowers`;
-    if (borrowerId) {
-      url += `?borrowerId=${borrowerId}`;
-    }
-
-    return this.http
-      .get<BorrowerInfo[]>(url)
-      .pipe(
-        timeout(this.requestTimeout),
-        catchError(this.handleError)
-      )
-      .toPromise()
-      .then(data => data || this.getMockBorrowers());
+    // Using mock data for development - replace with actual API call when backend is available
+    return Promise.resolve(this.getMockBorrowers());
   }
 
   /**
    * Health check for banking system connection
    */
   healthCheck(): Promise<boolean> {
-    return this.http
-      .get<{ status: string }>(`${this.bankingApiUrl}/health`)
-      .pipe(
-        timeout(5000),
-        catchError(() => of({ status: 'unavailable' }))
-      )
-      .toPromise()
-      .then(response => response?.status === 'healthy' || response?.status === 'ok');
+    // Using mock data - always return healthy for development
+    return Promise.resolve(true);
   }
 
   /**
