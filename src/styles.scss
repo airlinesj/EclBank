@@ -965,3 +965,55 @@ tbody tr {
     padding-top: 5rem;
   }
 }
+
+// ============================================================================
+// SIDEBAR OPEN STATE (Active overlay)
+// ============================================================================
+.sidebar-backdrop {
+  &.active {
+    display: block;
+  }
+}
+
+.main-layout.sidebar-open {
+  .sidebar-backdrop {
+    display: block;
+  }
+}
+
+// ============================================================================
+// MOBILE MENU TOGGLE VISIBILITY
+// ============================================================================
+.main-layout {
+  .menu-toggle {
+    display: none;
+  }
+
+  &.sidebar-open {
+    .menu-toggle {
+      display: flex;
+    }
+  }
+}
+
+// ============================================================================
+// SIDEBAR HEADER FIX - Ensure proper alignment
+// ============================================================================
+.sidebar {
+  .sidebar-header {
+    .logo-img {
+      flex-shrink: 0;
+    }
+
+    .sidebar-branding {
+      min-width: 0;
+      overflow: hidden;
+    }
+  }
+
+  .nav-menu {
+    .nav-item {
+      min-height: 48px;
+    }
+  }
+}

@@ -172,7 +172,7 @@ export class CoreBankingService implements ICoreBankingSystem {
       },
       {
         borrowerId: 'BORR002',
-        name: 'John Smith',
+        name: 'John Mapuranga',
         type: 'individual',
         creditScore: 720,
         totalLoans: 1,
